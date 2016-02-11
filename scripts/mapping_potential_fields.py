@@ -22,15 +22,15 @@ class MappingPotentialFields:
         self.charge_laser_particle = 0.3
         self.charge_forward_boost = 20.0
         self.boost_distance = 0.5
-        self.p_speed = 0.004
-	self.min_power = 0.1
+        self.p_speed = 0.006
+	self.min_power = 0.2
 	self.max_power = 0.5
 	self.stuck_power = 0.1
-        self.p_steering = 1.5
+        self.p_steering = 1.7
 
 	self.stuck_start_time = None
 
-        self.mapping_entropy = 0.0
+        self.mapping_entropy = 3.0
 
         rospy.Subscriber("/scan", numpy_msg(LaserScan), self.scan_callback)
         # TODO: check if this is the right topic
@@ -77,6 +77,12 @@ class MappingPotentialFields:
         
         command_msg.power = (self.p_speed * np.sign(total_x_component) * math.sqrt(total_x_component**2 + total_y_component**2))
 
+	# Slow down if more uncertain of current pose
+        if self.mapping_entropy > 1.0:
+            command_msg.power /= self.mapping_entropy
+
+	rospy.loginfo("power: {}".format(command_msg.power))
+
         if abs(command_msg.power) < self.stuck_power:
             # start recovery after 3 seconds
             if self.stuck_start_time is None:
@@ -90,12 +96,6 @@ class MappingPotentialFields:
             rospy.loginfo("finished recovery!")
             self.stuck_start_time = None
             self.charge_forward_boost = 20.0
-
-	# Slow down if more uncertain of current pose
-        if self.mapping_entropy > 1.0:
-            command_msg.power /= self.mapping_entropy
-
-	rospy.loginfo("power: {}".format(command_msg.power))
 
 	if abs(command_msg.power) < self.min_power:
             # set minimum power
