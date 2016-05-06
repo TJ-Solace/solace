@@ -7,10 +7,12 @@ add_definitions(-std=c++11)
 ## is used, also find other catkin packages
 
 find_package(catkin REQUIRED COMPONENTS
+        message_generation
         ackermann_msgs
         std_msgs
         geometry_msgs
-        message_generation
+        roscpp
+        rospy
         )
 
 find_package(ZED REQUIRED)
@@ -57,6 +59,7 @@ find_package(PCL REQUIRED)
 add_message_files(
   FILES
   ObjectDetections.msg
+  BlobDetections.msg
 )
 
 ## Generate services in the 'srv' folder
@@ -74,10 +77,12 @@ add_message_files(
 # )
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   std_msgs  # Or other packages containing msgs
-# )
+generate_messages(
+  DEPENDENCIES
+  std_msgs  # Or other packages containing msgs
+  ackermann_msgs
+  geometry_msgs
+)
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -112,6 +117,9 @@ catkin_package(
         CATKIN_DEPENDS
         roscpp
         rosconsole
+        message_runtime
+        ackermann_msgs
+        std_msgs
         sensor_msgs
         opencv
         image_transport
