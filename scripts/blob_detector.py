@@ -1,14 +1,12 @@
 #!/usr/bin/env python
 
 import numpy as np
-import matplotlib.pyplot as plt
-from skimage.measure import structural_similarity as ssim
 import cv2
 import rospy
 from sensor_msgs.msg import Image
 from cv_bridge import CvBridge, CvBridgeError
 #import threading
-from racecar_4.msg import BlobDetections
+from solace.msg import BlobDetections
 from geometry_msgs.msg import Point
 import math
 import time
