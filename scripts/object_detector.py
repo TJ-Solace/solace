@@ -2,7 +2,7 @@
 
 import rospy
 from sensor_msgs.msg import LaserScan
-from racecar_4.msg import ObjectDetectionsG as ObjectDetections
+from solace.msg import ObjectDetections
 import math
 
 
