@@ -1,16 +1,17 @@
 #!/usr/bin/env python
 
 import rospy
+import math
 from ackermann_msgs.msg import AckermannDriveStamped
 from sensor_msgs.msg import Joy
 
 
-MAX_SPEED = 2
+MAX_SPEED = 4
 
 class JoyController:
     def __init__(self):
         self.vesc_pub = rospy.Publisher("vesc/ackermann_cmd_mux/input/navigation", AckermannDriveStamped, queue_size=0)
-        self.joy_sub = rospy.Subscriber("/joy", Joy, self.cmd_cb)
+        self.joy_sub = rospy.Subscriber("/vesc/joy", Joy, self.cmd_cb)
 
     def cmd_cb(self, msg):
         # axes[0] x axis of left stick
@@ -34,9 +35,10 @@ class JoyController:
         # buttons[10] right stick
         cmd = AckermannDriveStamped()
         cmd.header.stamp = rospy.Time.now()
-        cmd.drive.steering_angle = msg.axes[0]
-        cmd.drive.speed = msg.axes[4] * MAX_SPEED
+        cmd.drive.speed = msg.axes[1] * MAX_SPEED
+        cmd.drive.steering_angle = msg.axes[3] * math.pi/2
         self.vesc_pub.publish(cmd)
+        print "published command"
 
 
 if __name__ == "__main__":
