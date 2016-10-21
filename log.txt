@@ -1,2 +1,18 @@
+10/3/16
+work on installing ROS kinetic
+
+10/5/16
+finish installing ROS kinetic
+
+10/12/16
+install vesc on car
+
+10/14/16
+tune vesc
+research gmapping
+
+10/17/16
+create joy teleop node
+
 10/21/16
-implement braking
+create launch files for teleop
