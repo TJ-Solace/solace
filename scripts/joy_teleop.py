@@ -13,6 +13,7 @@ class JoyController:
         self.vesc_pub = rospy.Publisher("vesc/ackermann_cmd_mux/input/navigation", AckermannDriveStamped, queue_size=0)
         self.joy_sub = rospy.Subscriber("/vesc/joy", Joy, self.cmd_cb)
 
+
     def cmd_cb(self, msg):
         # axes[0] x axis of left stick
         # axes[1] y axis of left stick
@@ -33,6 +34,7 @@ class JoyController:
         # buttons[8] Logitech button
         # buttons[9] left stick
         # buttons[10] right stick
+        #brake = 
         cmd = AckermannDriveStamped()
         cmd.header.stamp = rospy.Time.now()
         cmd.drive.speed = msg.axes[1] * MAX_SPEED
