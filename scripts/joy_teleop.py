@@ -34,11 +34,10 @@ class JoyController:
         # buttons[8] Logitech button
         # buttons[9] left stick
         # buttons[10] right stick
-        #brake = 
         cmd = AckermannDriveStamped()
         cmd.header.stamp = rospy.Time.now()
         cmd.drive.speed = msg.axes[1] * MAX_SPEED
-        cmd.drive.steering_angle = msg.axes[3] * math.pi/2
+        cmd.drive.steering_angle = msg.axes[3] * math.pi/6
         self.vesc_pub.publish(cmd)
         print "published command"
 
