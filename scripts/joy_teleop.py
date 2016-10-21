@@ -10,7 +10,7 @@ MAX_SPEED = 4
 
 class JoyController:
     def __init__(self):
-        self.vesc_pub = rospy.Publisher("vesc/ackermann_cmd_mux/input/navigation", AckermannDriveStamped, queue_size=0)
+        self.vesc_pub = rospy.Publisher("/vesc/ackermann_cmd_mux/input/teleop", AckermannDriveStamped, queue_size=0)
         self.joy_sub = rospy.Subscriber("/vesc/joy", Joy, self.cmd_cb)
 
 
