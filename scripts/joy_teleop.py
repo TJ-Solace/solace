@@ -16,6 +16,7 @@ class JoyController:
         self.joy_sub = rospy.Subscriber("/vesc/joy", Joy, self.cmd_cb)
 	self.prev_speed = 0
         self.prev_time = rospy.get_time()
+        self.killed = False
 
     def cmd_cb(self, msg):
         # axes[0] x axis of left stick
@@ -37,6 +38,20 @@ class JoyController:
         # buttons[8] Logitech button
         # buttons[9] left stick
         # buttons[10] right stick
+
+        if msg.buttons[0] and msg.buttons[1]:
+            self.killed = False
+
+        if msg.buttons[5]:
+            self.killed = True
+
+        if self.killed:
+            cmd = AckermannDriveStamped()
+            cmd.header.stamp = rospy.Time.now()
+            cmd.drive.speed = 0
+            self.vesc_pub.publish(cmd)
+            return
+
 	if -(msg.axes[5]-1) > 0:
             brake = Float64()
             brake.data = -(msg.axes[5]-1) * 25
