@@ -7,7 +7,7 @@ from sensor_msgs.msg import Joy
 from std_msgs.msg import Float64
 
 MAX_SPEED = 4
-MAX_ACCELERATION = 1
+MAX_ACCELERATION = 4
 
 class JoyController:
     def __init__(self):
@@ -41,7 +41,8 @@ class JoyController:
             brake = Float64()
             brake.data = -(msg.axes[5]-1) * 25
             self.brake_pub.publish(brake)
-	else:
+            self.prev_speed = 0	
+       else:
 	    cmd = AckermannDriveStamped()
             cmd.header.stamp = rospy.Time.now()
             speed = msg.axes[1] * MAX_SPEED
