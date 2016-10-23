@@ -47,7 +47,7 @@ class JoyController:
             speed = msg.axes[1] * MAX_SPEED
             try:
                 if abs((speed - self.prev_speed) / (rospy.get_time() - self.prev_time)) > MAX_ACCELERATION:
-                    speed = self.prev_speed + (speed - self.prev_speed) / abs(speed - self.prev_speed) * MAX_ACCELERATION / (rospy.get_time() - self.prev_time)
+                    speed = self.prev_speed + ((speed - self.prev_speed) / abs(speed - self.prev_speed)) * (MAX_ACCELERATION * (rospy.get_time() - self.prev_time))
             except: pass
             cmd.drive.speed = speed
             self.prev_speed = speed
