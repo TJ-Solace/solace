@@ -13,6 +13,7 @@ class JoyController:
         self.vesc_pub = rospy.Publisher("/vesc/ackermann_cmd_mux/input/teleop", AckermannDriveStamped, queue_size=0)
         self.brake_pub = rospy.Publisher("/vesc/commands/motor/brake", Float64, queue_size=0)
         self.joy_sub = rospy.Subscriber("/vesc/joy", Joy, self.cmd_cb)
+	self.prev_speed = 0
 
     def cmd_cb(self, msg):
         # axes[0] x axis of left stick
@@ -34,15 +35,17 @@ class JoyController:
         # buttons[8] Logitech button
         # buttons[9] left stick
         # buttons[10] right stick
-        cmd = AckermannDriveStamped()
-        cmd.header.stamp = rospy.Time.now()
-        cmd.drive.speed = msg.axes[1] * MAX_SPEED
-        cmd.drive.steering_angle = msg.axes[3] * math.pi/6
-        self.vesc_pub.publish(cmd)
-        brake = Float64()
-        brake.data = -(msg.axes[5]-1) * 20
-        rospy.loginfo("brake: {}".format(brake.data))
-        self.brake_pub.publish(brake)
+	if -(msg.axes[5]-1) > 0:
+            brake = Float64()
+            brake.data = -(msg.axes[5]-1) * 25
+            self.brake_pub.publish(brake)
+	else:
+	    cmd = AckermannDriveStamped()
+            cmd.header.stamp = rospy.Time.now()
+            cmd.drive.speed = msg.axes[1] * MAX_SPEED if abs(msg.axes[1] * MAX_SPEED - self.prev_speed) < .1 else self.prev_speed + msg.axes[1] / abs(msg.axes[1]) * .1
+	    self.prev_speed = cmd.drive.speed
+            cmd.drive.steering_angle = msg.axes[3] * math.pi/6
+            self.vesc_pub.publish(cmd)
 
 
 if __name__ == "__main__":
