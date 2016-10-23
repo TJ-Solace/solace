@@ -24,3 +24,7 @@ set up networking on pi
 research gmapping
 finish setting up networking on pi and drive car around with remote
 install pi on car
+
+10/26/16
+testing braking on car
+got power working properly with raspi
