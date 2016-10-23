@@ -15,10 +15,10 @@ wheelbase: .25
 
 vesc_driver:
   port: /dev/ttyACM0
-  duty_cycle_min: 0.0
-  duty_cycle_max: 0.0
+  duty_cycle_min: -0.25
+  duty_cycle_max: 0.25
   current_min: 0.0
-  current_max: 0.0
+  current_max: 20.0
   brake_min: 0.0
   brake_max: 50.0
   speed_min: -6000
