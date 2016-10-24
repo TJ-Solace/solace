@@ -13,6 +13,14 @@ research gmapping
 
 10/17/16
 create joy teleop node
+set up networking on pi
 
 10/21/16
+tune vesc
 create launch files for teleop
+set up networking on pi
+
+10/24/16
+research gmapping
+finish setting up networking on pi and drive car around with remote
+install pi on car
