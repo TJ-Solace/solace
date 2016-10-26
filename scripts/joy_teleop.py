@@ -6,11 +6,13 @@ from ackermann_msgs.msg import AckermannDriveStamped
 from sensor_msgs.msg import Joy
 
 
+
 MAX_SPEED = 4
 
 class JoyController:
     def __init__(self):
         self.vesc_pub = rospy.Publisher("/vesc/ackermann_cmd_mux/input/teleop", AckermannDriveStamped, queue_size=0)
+        self.brake_pub = rospy.Publisher("/vesc/commands/motor/brake", float, queue_size=0)
         self.joy_sub = rospy.Subscriber("/vesc/joy", Joy, self.cmd_cb)
 
 
@@ -39,7 +41,8 @@ class JoyController:
         cmd.drive.speed = msg.axes[1] * MAX_SPEED
         cmd.drive.steering_angle = msg.axes[3] * math.pi/6
         self.vesc_pub.publish(cmd)
-        print "published command"
+        
+        self.brake_pub.publish((msg.axes[5]+1)*4);
 
 
 if __name__ == "__main__":
