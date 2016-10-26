@@ -45,10 +45,11 @@ class JoyController:
 	    cmd = AckermannDriveStamped()
             cmd.header.stamp = rospy.Time.now()
             speed = msg.axes[1] * MAX_SPEED
-            if abs((speed - self.prev_speed) / (rospy.get_time() - self.prev_time)) > MAX_ACCELERATION:
-                speed = self.prev_speed + (speed - self.prev_speed) / abs(speed - self.prev_speed) * MAX_ACCELERATION
-            cmd.drive.speed = msg.axes[1] * MAX_SPEED if abs(msg.axes[1] * MAX_SPEED - self.prev_speed) < .1 else self.prev_speed + msg.axes[1] / abs(msg.axes[1]) * .1
-	    cmd.drive.speed = speed
+            try:
+                if abs((speed - self.prev_speed) / (rospy.get_time() - self.prev_time)) > MAX_ACCELERATION:
+                    speed = self.prev_speed + (speed - self.prev_speed) / abs(speed - self.prev_speed) * MAX_ACCELERATION
+            except: pass
+            cmd.drive.speed = speed
             self.prev_speed = speed
             self.prev_time = rospy.get_time()
             cmd.drive.steering_angle = msg.axes[3] * math.pi/6
