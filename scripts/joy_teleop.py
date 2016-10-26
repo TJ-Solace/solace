@@ -40,7 +40,8 @@ class JoyController:
         cmd.drive.steering_angle = msg.axes[3] * math.pi/6
         self.vesc_pub.publish(cmd)
         brake = Float64()
-        brake.data = (msg.axes[5]+1) * 4
+        brake.data = -(msg.axes[5]-1) * 4
+        rospy.loginfo("brake: {}", brake.data)
         self.brake_pub.publish(brake)
 
 
