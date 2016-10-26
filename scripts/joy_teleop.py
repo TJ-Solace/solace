@@ -4,8 +4,7 @@ import rospy
 import math
 from ackermann_msgs.msg import AckermannDriveStamped
 from sensor_msgs.msg import Joy
-
-
+from std_msgs.msg import Float64
 
 MAX_SPEED = 4
 
@@ -14,7 +13,6 @@ class JoyController:
         self.vesc_pub = rospy.Publisher("/vesc/ackermann_cmd_mux/input/teleop", AckermannDriveStamped, queue_size=0)
         self.brake_pub = rospy.Publisher("/vesc/commands/motor/brake", float, queue_size=0)
         self.joy_sub = rospy.Subscriber("/vesc/joy", Joy, self.cmd_cb)
-
 
     def cmd_cb(self, msg):
         # axes[0] x axis of left stick
@@ -41,8 +39,9 @@ class JoyController:
         cmd.drive.speed = msg.axes[1] * MAX_SPEED
         cmd.drive.steering_angle = msg.axes[3] * math.pi/6
         self.vesc_pub.publish(cmd)
-        
-        self.brake_pub.publish((msg.axes[5]+1)*4);
+        brake = Float64()
+        brake.data = (msg.axes[5]+1) * 4
+        self.brake_pub.publish(brake)
 
 
 if __name__ == "__main__":
