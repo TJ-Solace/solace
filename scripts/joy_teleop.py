@@ -96,11 +96,12 @@ class JoyController:
 
     def setDuty(self, duty):
         cmd = Float64()
+        cmd.data = duty
         self.duty_pub.publish(cmd)
 
     def setCurrent(self, current):
         cmd = Float64()
-        cmd.data = 0
+        cmd.data = current
         self.current_pub.publish(cmd)
 
     def setSpeed(self, speed):
