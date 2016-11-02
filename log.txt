@@ -27,4 +27,3 @@ install pi on car
 
 10/26/16
 testing braking on car
-got power working properly with raspi
