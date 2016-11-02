@@ -27,3 +27,7 @@ install pi on car
 
 10/26/16
 testing braking on car
+
+11/2/16
+replaced more MIT code for better manual control of the VESC
+made first draft of poster
