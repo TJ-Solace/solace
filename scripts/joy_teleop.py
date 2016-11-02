@@ -25,6 +25,7 @@ class JoyController:
         self.prev_time = rospy.get_time()
         self.killed = False
         self.mode = 0
+        self.braking = False
         # 0 == duty cycle
         # 1 == current
         # 2 == speed
@@ -69,21 +70,29 @@ class JoyController:
         elif msg.buttons[2]:
             self.mode = 2
 
-        if -(msg.axes[5] - 1) > 0:
+        if -(msg.axes[5] - 1) > 0.01:
+            self.braking = True
             brake = Float64()
             brake.data = -(msg.axes[5] - 1) * 25
             self.brake_pub.publish(brake)
-            self.prev_speed = 0
-        else:
-            if self.mode == 0:
-                self.setDuty(msg.axes[0] * mults[0] + offsets[0])
-                self.setServoPos(msg.axes[3])
-            elif self.mode == 1:
-                self.setCurrent(msg.axes[1] * mults[1] + offsets[1])
-                self.setServoPos(msg.axes[3])
-            elif self.mode == 2:
-                self.setSpeed(msg.axes[1] * mults[2] + offsets[2])
-                self.setServoPos(msg.axes[3] / 2 + servo_offset)
+            self.setServoPos(msg.axes[3] / 2 + servo_offset)
+            return
+
+        if self.braking:
+            self.braking = False
+            brake = Float64()
+            brake.data = 0
+            self.brake_pub.publish(brake)
+
+        if self.mode == 0:
+            self.setDuty(msg.axes[0] * mults[0] + offsets[0])
+            self.setServoPos(msg.axes[3] / 2 + servo_offset)
+        elif self.mode == 1:
+            self.setCurrent(msg.axes[1] * mults[1] + offsets[1])
+            self.setServoPos(msg.axes[3] / 2 + servo_offset)
+        elif self.mode == 2:
+            self.setSpeed(msg.axes[1] * mults[2] + offsets[2])
+            self.setServoPos(msg.axes[3] / 2 + servo_offset)
 
     def setDuty(self, duty):
         cmd = Float64()
