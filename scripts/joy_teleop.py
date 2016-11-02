@@ -55,12 +55,12 @@ class JoyController:
             self.killed = False
 
         if msg.buttons[5]:
-            self.killed = True
-
-        if self.killed:
             cmd = Float64()
             cmd.data = 0
             self.current_pub.publish(cmd)
+            self.killed = True
+
+        if self.killed:
             return
 
         if msg.buttons[0]:
