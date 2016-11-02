@@ -11,7 +11,7 @@ offsets = [0, 20, 0]
 
 servo_min = 0.1
 servo_max = 0.9
-servo_offset = 0.0
+servo_offset = 0.463
 
 class JoyController:
     def __init__(self):
@@ -51,9 +51,7 @@ class JoyController:
         # buttons[10] right stick
 
         if msg.buttons[4]:
-            rospy.sleep(1)
-            if msg.buttons[4]:
-                self.killed = False
+            self.killed = False
 
         if msg.buttons[5]:
             self.killed = True
@@ -85,7 +83,7 @@ class JoyController:
                 self.setServoPos(msg.axes[3])
             elif self.mode == 2:
                 self.setSpeed(msg.axes[1] * mults[2] + offsets[2])
-                self.setServoPos(msg.axes[3])
+                self.setServoPos(msg.axes[3] / 2 + servo_offset)
 
     def setDuty(self, duty):
         cmd = Float64()
