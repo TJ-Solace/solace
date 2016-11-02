@@ -6,7 +6,7 @@ from ackermann_msgs.msg import AckermannDriveStamped
 from sensor_msgs.msg import Joy
 from std_msgs.msg import Float64
 
-mults = [0.1, 10, 20000]
+mults = [0.25, 20, 20000]
 offsets = [0, 0, 0]
 
 servo_min = 0.1
@@ -75,7 +75,7 @@ class JoyController:
             brake = Float64()
             brake.data = -(msg.axes[5] - 1) * 25
             self.brake_pub.publish(brake)
-            self.setServoPos(msg.axes[3] / 2 + servo_offset)
+            self.setServoPos(msg.axes[3] / -2 + servo_offset)
             return
 
         if self.braking:
@@ -86,13 +86,13 @@ class JoyController:
 
         if self.mode == 0:
             self.setDuty(msg.axes[1] * mults[0] + offsets[0])
-            self.setServoPos(msg.axes[3] / 2 + servo_offset)
+            self.setServoPos(msg.axes[3] / -2 + servo_offset)
         elif self.mode == 1:
             self.setCurrent(msg.axes[1] * mults[1] + offsets[1])
-            self.setServoPos(msg.axes[3] / 2 + servo_offset)
+            self.setServoPos(msg.axes[3] / -2 + servo_offset)
         elif self.mode == 2:
             self.setSpeed(msg.axes[1] * mults[2] + offsets[2])
-            self.setServoPos(msg.axes[3] / 2 + servo_offset)
+            self.setServoPos(msg.axes[3] / -2 + servo_offset)
 
     def setDuty(self, duty):
         cmd = Float64()
