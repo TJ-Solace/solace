@@ -6,8 +6,8 @@ from ackermann_msgs.msg import AckermannDriveStamped
 from sensor_msgs.msg import Joy
 from std_msgs.msg import Float64
 
-mults = [1, 40, 4]
-offsets = [0, 20, 0]
+mults = [0.5, 40, 4000]
+offsets = [0.5, 0, 0]
 
 servo_min = 0.1
 servo_max = 0.9
@@ -85,7 +85,7 @@ class JoyController:
             self.brake_pub.publish(brake)
 
         if self.mode == 0:
-            self.setDuty(msg.axes[0] * mults[0] + offsets[0])
+            self.setDuty(msg.axes[1] * mults[0] + offsets[0])
             self.setServoPos(msg.axes[3] / 2 + servo_offset)
         elif self.mode == 1:
             self.setCurrent(msg.axes[1] * mults[1] + offsets[1])
