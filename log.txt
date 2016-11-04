@@ -31,3 +31,8 @@ testing braking on car
 11/2/16
 replaced more MIT code for better manual control of the VESC
 made first draft of poster
+set up new wifi thing
+VESC arbitrarily died
+
+11/3/16
+set up IMU
