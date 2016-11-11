@@ -35,4 +35,11 @@ set up new wifi thing
 VESC arbitrarily died
 
 11/3/16
-set up IMU
+set up IMU with ROS
+calibrate IMU accelerometer and gyroscope
+
+11/9/16
+start setting up ZED with ROS
+
+11/11/16
+continue setting up ZED with ROS
