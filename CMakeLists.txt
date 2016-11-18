@@ -1,9 +1,16 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 2.8.7)
 project(solace)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
+
+find_package(ZED 1.1 REQUIRED)
+find_package(OpenCV 3.1 REQUIRED)
+find_package(CUDA 8.0 REQUIRED)
+find_package(PCL REQUIRED)
+find_package(Eigen3 REQUIRED)
+
 find_package(catkin REQUIRED COMPONENTS
     ackermann_msgs
     std_msgs
@@ -112,7 +119,26 @@ catkin_package(
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
-# include_directories(include)
+
+add_definitions(-std=c++11)
+
+include_directories(
+        ${catkin_INCLUDE_DIRS}
+        ${CUDA_INCLUDE_DIRS}
+        ${ZED_INCLUDE_DIRS}
+        ${OpenCV_INCLUDE_DIRS}
+        ${PCL_INCLUDE_DIRS}
+)
+
+include_directories(${CUDA_INCLUDE_DIRS})
+include_directories(${ZED_INCLUDE_DIRS})
+include_directories(${EIGEN3_INCLUDE_DIR})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+
+link_directories(${ZED_LIBRARY_DIR})
+link_directories(${OpenCV_LIBRARY_DIRS})
+link_directories(${CUDA_LIBRARY_DIRS})
+
 
 ## Declare a C++ library
 # add_library(solace
@@ -126,6 +152,7 @@ catkin_package(
 
 ## Declare a C++ executable
 # add_executable(solace_node src/solace_node.cpp)
+add_executable(zedTest src/zedTest.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
@@ -151,7 +178,7 @@ catkin_package(
 # )
 
 ## Mark executables and/or libraries for installation
-# install(TARGETS solace solace_node
+# install(TARGETS solace zedTest
 #   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}

@@ -42,4 +42,7 @@ calibrate IMU accelerometer and gyroscope
 start setting up ZED with ROS
 
 11/11/16
-continue setting up ZED with ROS
+Proved that the ZED works well if used with the ZED SDK, rather than with ROS
+
+11/18/16
+Attempted to make ZED SDK source code build on my system, with no success
