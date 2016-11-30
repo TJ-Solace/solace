@@ -37,10 +37,17 @@
 
 //opencv includes
 #include <opencv2/opencv.hpp>
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/calib3d/calib3d.hpp>
 
 //ZED Includes
 #include <zed/Camera.hpp>
-#include <zed/utils/GlobalDefine.hpp>
+//#include <zed/utils/GlobalDefine.hpp>
+
+using namespace sl::zed;
+using namespace std;
 
 typedef struct mouseOCVStruct {
     float* data;

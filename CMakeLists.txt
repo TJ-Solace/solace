@@ -1,22 +1,24 @@
 cmake_minimum_required(VERSION 2.8.7)
 project(solace)
+add_definitions(-std=c++11)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 
-find_package(ZED 1.1 REQUIRED)
-find_package(OpenCV 3.1 REQUIRED)
+find_package(catkin REQUIRED COMPONENTS
+        ackermann_msgs
+        std_msgs
+        geometry_msgs
+        message_generation
+        )
+
+find_package(ZED REQUIRED)
+find_package(OpenCV 3.1 COMPONENTS core highgui imgproc features2d REQUIRED)
 find_package(CUDA 8.0 REQUIRED)
 find_package(PCL REQUIRED)
-find_package(Eigen3 REQUIRED)
+#find_package(Eigen3 COMPONENTS core REQUIRED)
 
-find_package(catkin REQUIRED COMPONENTS
-    ackermann_msgs
-    std_msgs
-    geometry_msgs
-    message_generation
-)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -107,10 +109,15 @@ add_message_files(
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES solace
-#  CATKIN_DEPENDS other_catkin_pkg
-#  DEPENDS system_lib
+        CATKIN_DEPENDS
+        roscpp
+        rosconsole
+        sensor_msgs
+        opencv
+        image_transport
+        dynamic_reconfigure
+        tf2_ros
+        pcl_conversions
 )
 
 ###########
@@ -120,8 +127,6 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 
-add_definitions(-std=c++11)
-
 include_directories(
         ${catkin_INCLUDE_DIRS}
         ${CUDA_INCLUDE_DIRS}
@@ -130,14 +135,10 @@ include_directories(
         ${PCL_INCLUDE_DIRS}
 )
 
-include_directories(${CUDA_INCLUDE_DIRS})
-include_directories(${ZED_INCLUDE_DIRS})
-include_directories(${EIGEN3_INCLUDE_DIR})
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
-
 link_directories(${ZED_LIBRARY_DIR})
-link_directories(${OpenCV_LIBRARY_DIRS})
 link_directories(${CUDA_LIBRARY_DIRS})
+link_directories(${OpenCV_LIBRARY_DIRS})
+link_directories(${PCL_LIBRARY_DIRS})
 
 
 ## Declare a C++ library
@@ -152,7 +153,16 @@ link_directories(${CUDA_LIBRARY_DIRS})
 
 ## Declare a C++ executable
 # add_executable(solace_node src/solace_node.cpp)
+
+set(LINK_LIBRARIES
+        ${catkin_LIBRARIES}
+        ${ZED_LIBRARIES}
+        ${CUDA_LIBRARIES} ${CUDA_nppi_LIBRARY} ${CUDA_npps_LIBRARY}
+        ${OpenCV_LIBS}
+        ${PCL_LIBRARIES})
+
 add_executable(zedTest src/zedTest.cpp)
+target_link_libraries(zedTest ${LINK_LIBRARIES})
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
@@ -162,6 +172,9 @@ add_executable(zedTest src/zedTest.cpp)
 # target_link_libraries(solace_node
 #   ${catkin_LIBRARIES}
 # )
+
+FILE(GLOB_RECURSE extra_files ${CMAKE_SOURCE_DIR}/*)
+add_custom_target(dummy_${PROJECT_NAME} SOURCES ${extra_files})
 
 #############
 ## Install ##
