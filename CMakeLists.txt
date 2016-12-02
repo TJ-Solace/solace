@@ -162,7 +162,9 @@ set(LINK_LIBRARIES
         ${PCL_LIBRARIES})
 
 add_executable(zedTest src/zedTest.cpp)
+add_executable(unperspective src/unperspective.cpp)
 target_link_libraries(zedTest ${LINK_LIBRARIES})
+target_link_libraries(unperspective ${LINK_LIBRARIES})
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
@@ -172,9 +174,6 @@ target_link_libraries(zedTest ${LINK_LIBRARIES})
 # target_link_libraries(solace_node
 #   ${catkin_LIBRARIES}
 # )
-
-FILE(GLOB_RECURSE extra_files ${CMAKE_SOURCE_DIR}/*)
-add_custom_target(dummy_${PROJECT_NAME} SOURCES ${extra_files})
 
 #############
 ## Install ##
