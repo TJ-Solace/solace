@@ -47,5 +47,20 @@ Proved that the ZED works well if used with the ZED SDK, rather than with ROS
 11/18/16
 Attempted to make ZED SDK source code build on my system, with no success
 
+11/28/16
+Learn how Bayes' rule and Markov assumption work in Bayes' filters
+
 11/30/16
 ZED SDK Code compiles! We done did it bois!
+
+12/2/16
+Received TX1
+Began CADing TX1
+Installed JetPack and flashed TX1
+
+12/5/16
+Reflashed TX1
+Installed ROS and packages on TX1
+
+12/7/16
+Installed ZED SDK on TX1 and updated install script
