@@ -1,4 +1,17 @@
 $fn=100;
+
+module button() {
+    translate([3.125, 3.125, 0]) {
+        color("silver")
+            linear_extrude(3.5)
+                square([6.25, 6.25], true);
+        translate([0, 0, 3.5])
+            color("red")
+                linear_extrude(2.2)
+                    circle(d=2.75, true);
+    }
+}
+
 module jetsonTX1() {
     color("darkgreen") {  // board
         linear_extrude(1.75) {
@@ -69,6 +82,18 @@ module jetsonTX1() {
                 }
             }
         }
+        
+        color("orange") { // ethernet port
+            translate([19-6.35, 165.1-15.75, 0]) {
+                linear_extrude(13.5) {
+                    square([16.75, 15.75], false);
+                }
+            }
+        }
+        translate([8.75, -1.25, 0]) button();
+        translate([8.75 + 6.25 + 6.8, -1.25, 0]) button();
+        translate([8.75 + 6.25 + 6.8 + 6.25 + 6.9, -1.25, 0]) button();
+        translate([8.75 + 6.25 + 6.8 + 6.25 + 6.9 + 6.25 + 6.85, -1.25, 0]) button();
     }
 }
 
