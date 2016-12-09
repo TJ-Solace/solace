@@ -161,10 +161,10 @@ set(LINK_LIBRARIES
         ${OpenCV_LIBS}
         ${PCL_LIBRARIES})
 
-add_executable(zedTest src/zedTest.cpp)
-add_executable(unperspective src/unperspective.cpp)
-target_link_libraries(zedTest ${LINK_LIBRARIES})
-target_link_libraries(unperspective ${LINK_LIBRARIES})
+    #add_executable(zedTest src/zedTest.cpp)
+    #add_executable(unperspective src/unperspective.cpp)
+    #target_link_libraries(zedTest ${LINK_LIBRARIES})
+    #target_link_libraries(unperspective ${LINK_LIBRARIES})
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
