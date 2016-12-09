@@ -17,9 +17,11 @@ class BlobDetector:
     def __init__(self):
         self.bridge = CvBridge()
         self.pub_blobs = rospy.Publisher("/blobs", BlobDetections, queue_size=1)
-        self.sub_image = rospy.Subscriber("/camera/rgb/image_rect_color", Image, self.processImage, queue_size=1)
+        self.sub_image = rospy.Subscriber("/zed/rgb/image_rect_color", Image, self.processImage, queue_size=1)
+        print "Initialized blob detection."
         
     def processImage(self, image_msg):
+        print "Processing..."
         im = self.bridge.imgmsg_to_cv2(image_msg)
         #height, width = im.shape[:2]
         #im = im[50:int(height/2)-40, 0:width]
@@ -29,19 +31,22 @@ class BlobDetector:
         self.find_color(im, "red", cv2.inRange(hsv, np.array([0, 140, 30]), np.array([10, 240, 150])))       # red
         self.find_color(im, "green", cv2.inRange(hsv, np.array([45, 110, 100]), np.array([65, 210, 150])))   # green
         #self.find_color(im, "green", cv2.inRange(hsv, np.array([50, .4*255, .15*255]), np.array([77, 255, 255])))  # green
-        #self.find_color(im, "orange", cv2.inRange(hsv, np.array([4, 230, 140]), np.array([6, 255, 200])))   # green
-        #self.find_color(im, "yellow", cv2.inRange(hsv, np.array([40, 150, 100]), np.array([50, 200, 175])))  # yellow
+        self.find_color(im, "orange", cv2.inRange(hsv, np.array([4, 230, 140]), np.array([6, 255, 200])))   # green
+        self.find_color(im, "yellow", cv2.inRange(hsv, np.array([40, 150, 100]), np.array([50, 200, 175])))  # yellow
         self.find_color(im, "blue", cv2.inRange(hsv, np.array([100, 120, 15]), np.array([130, 180, 80])))   # blue
-        #self.find_color(im, "pink", cv2.inRange(hsv, np.array([170, 210, 160]), np.array([180, 230, 190])))    # pink
+        self.find_color(im, "pink", cv2.inRange(hsv, np.array([170, 210, 160]), np.array([180, 230, 190])))    # pink
         if len(self.msg.heights) > 0:
             self.pub_blobs.publish(self.msg)
 
     def find_color(self, passed_im, label_color, mask):
         im = passed_im.copy()
-        contours = cv2.findContours(mask, cv2.cv.CV_RETR_TREE, cv2.cv.CV_CHAIN_APPROX_SIMPLE)[0]
+        contours = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)[0]
         approx_contours = []
+        print contours
         for c in contours:
+            print c
             area = cv2.contourArea(c)
+            area = 500
             if area < 400: 
                 continue
             perim = cv2.arcLength(c, True)
