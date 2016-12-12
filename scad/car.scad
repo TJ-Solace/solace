@@ -20,8 +20,21 @@ module car() {
         translate([-70/2 - 310/2, 0, 0]) axle();
         translate([70/2 + 310/2, 0, 0]) axle();
     }
-    translate([4, 8, 0]) {
-        square([, 133]);
+    color("red") {
+        translate([0, 8, 0]) {
+            //linear_extrude(10) square([160, 133]);
+            cube([45, 5, 33]);
+            translate([115, 0, 0]) cube([45, 5, 33]);
+            translate([115, 150-16-5, 0]) cube([45, 5, 33]);
+            translate([0, 150-16-5, 0]) cube([45, 5, 33]);
+        }
+            translate([0, 150/2-25/2, 0]) cube([139.5, 25, 42.5]);
+            translate([10-37, 150/2-55.5/2, 0]) cube([37, 55.5, 42.5]);
+        
+        translate([4, 9, 0]) {
+            cube([5, 150-20, 8.35]);
+            translate([115+45-4-5-5, 0, 0]) cube([5, 150-20, 8.35]);
+        }
     }
 }
 
