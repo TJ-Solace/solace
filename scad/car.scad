@@ -10,8 +10,8 @@ module wheel() {
 
 module axle() {
     translate([0, 0, 52]) linear_extrude(52) square([50, 285], true);
-    translate([0, -285/2, 140/2]) rotate([90, 0, 0]) wheel();
-    translate([0, 285/2, 140/2]) rotate([-90, 0, 0]) wheel();
+    color([0.15, 0.15, 0.15]) translate([0, -285/2, 140/2]) rotate([90, 0, 0]) wheel();
+    color([0.15, 0.15, 0.15]) translate([0, 285/2, 140/2]) rotate([-90, 0, 0]) wheel();
 }
 
 module car() {
