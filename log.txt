@@ -69,6 +69,6 @@ Updated install script
 
 12/9/16
 Fixed PCL
-Installed ROS wrapper on TX1
+Installed ZED ROS wrapper on TX1
 Updated install script
 Worked on blob detector
