@@ -72,3 +72,7 @@ Fixed PCL
 Installed ZED ROS wrapper on TX1
 Updated install script
 Worked on blob detector
+
+12/16/16
+Got blob detector to work with OpenCV 3
+Fixed GitHub commit problems

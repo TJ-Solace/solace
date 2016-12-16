@@ -58,7 +58,7 @@ class BlobDetector:
                 im = passed_im.copy()
                 cv2.putText(im, "{} rectangle".format(label_color), center, cv2.FONT_HERSHEY_PLAIN, 2, (100, 255, 100))
                 cv2.drawContours(im, [approx], -1, (100, 255, 100), 2)
-                cv2.imwrite("/home/racecar/challenge_photos1/{}rectangle{}.png".format(label_color, int(time.clock()*1000)), im)
+                cv2.imwrite("/home/ubuntu/challenge_photos1/{}rectangle{}.png".format(label_color, int(time.clock()*1000)), im)
                 print "{}square".format(label_color)
             elif abs(len(approx)-12) <= 1:  # cross
             	approx_contours.append(approx)
@@ -70,7 +70,7 @@ class BlobDetector:
                 im = passed_im.copy()
                 cv2.putText(im, "{} cross".format(label_color), center, cv2.FONT_HERSHEY_PLAIN, 2, (100, 255, 100))
                 cv2.drawContours(im, [approx], -1, (100, 255, 100), 2)
-                cv2.imwrite("/home/racecar/challenge_photos1/{}cross{}.png".format(label_color, int(time.clock()*1000)), im)
+                cv2.imwrite("/home/ubuntu/challenge_photos1/{}cross{}.png".format(label_color, int(time.clock()*1000)), im)
                 print "{}cross".format(label_color)
             elif abs(len(approx)-8) <= 2:  # circle
 
@@ -83,7 +83,7 @@ class BlobDetector:
                 im = passed_im.copy()
                 cv2.putText(im, "{} circle".format(label_color), center, cv2.FONT_HERSHEY_PLAIN, 2, (100, 255, 100))
                 cv2.drawContours(im, [approx], -1, (100, 255, 100), 2)
-                cv2.imwrite("/home/racecar/challenge_photos1/{}circle{}.png".format(label_color, int(time.clock()*1000)), im)
+                cv2.imwrite("/home/ubuntu/challenge_photos1/{}circle{}.png".format(label_color, int(time.clock()*1000)), im)
                 print "{}circle".format(label_color)
             if self.isTesting:
                 cv2.drawContours(self.image, approx_contours, -1, (100, 255, 100), 2)
