@@ -76,3 +76,12 @@ Worked on blob detector
 12/16/16
 Got blob detector to work with OpenCV 3
 Fixed GitHub commit problems
+
+3/3/17
+Attempted to install new racecar image
+Switched to Ubuntu 14.04 on host computer to flash Jetson
+Created new VM from scratch for new racecar package
+
+3/6/17
+Flashed clean TX1 image after two attempts to install new Jetson image
+Installed racecar and solace packages in new VM
