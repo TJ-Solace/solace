@@ -85,3 +85,9 @@ Created new VM from scratch for new racecar package
 3/6/17
 Flashed clean TX1 image after two attempts to install new Jetson image
 Installed racecar and solace packages in new VM
+
+3/8/17
+Set up new racecar workspace with OpenCV4Tegra
+Updated install script
+Set up networking on TX1
+Use new teleop config
