@@ -4,10 +4,14 @@
   <arg name="run_camera" default="false"/>
 
   <group ns="vesc">
-    <!-- joystick to ackermann command -->
+    <!-- joystick node -->
     <include file="$(find solace)/launch/includes/common/joy_teleop.launch.xml" >
       <arg name="racecar_version" value="$(arg racecar_version)" />
     </include>
+
+    <!-- Spawn MUXs -->
+    <include file="$(find solace)/launch/mux.launch" />
+
     <!-- start electronic speed controller driver -->
     <include file="$(find solace)/launch/includes/$(arg racecar_version)/vesc.launch.xml" >
       <arg name="racecar_version" value="$(arg racecar_version)" />

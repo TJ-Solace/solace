@@ -5,7 +5,7 @@ speed_to_erpm_offset: 0.0
 
 # servo value (0 to 1) =  steering_angle_to_servo_gain * steering angle (radians) + steering_angle_to_servo_offset
 steering_angle_to_servo_gain: -1.2135
-steering_angle_to_servo_offset: 0.463
+steering_angle_to_servo_offset: 0.5
 
 # publish odom to base link tf
 vesc_to_odom/publish_tf: true
@@ -15,15 +15,16 @@ wheelbase: .25
 
 vesc_driver:
   port: /dev/ttyACM0
-  duty_cycle_min: -0.5
-  duty_cycle_max: 0.5
-  current_min: -20.0
-  current_max: 20.0
-  brake_min: 0.0
-  brake_max: 50.0
-  speed_min: -6000
-  speed_max: 12000
+  duty_cycle_min: 0.0
+  duty_cycle_max: 0.0
+  current_min: 0.0
+  current_max: 40.0
+  brake_min: -20000.0
+  brake_max: 200000.0
+  speed_min: -3250
+  speed_max: 4250
+  max_delta_rpm: 200 # For the trapezoidal controller
   position_min: 0.0
   position_max: 0.0
-  servo_min: 0.1
-  servo_max: 0.9
+  servo_min: 0.15
+  servo_max: 0.85

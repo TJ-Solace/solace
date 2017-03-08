@@ -6,24 +6,22 @@
 #   short_desc:     Short description (optional)
 
 subscribers:
-  - name:        "Safety"
-    topic:       "input/safety"
-    timeout:     0.2
-    priority:    15
-    short_desc:  "Input for safety monitor, highest priority"
   - name:        "Teleoperation"
     topic:       "input/teleop"
     timeout:     0.2
     priority:    10
-    short_desc:  "Input for human teleoperation (joystick)"
+    short_desc:  "Input for human teleoperation (joystick). Highest priority."
+    
+  - name:        "Safety"
+    topic:       "input/safety"
+    timeout:     0.2
+    priority:    5
+    short_desc:  "Input for safety monitor."
+
   - name:        "Navigation"
     topic:       "input/navigation"
     timeout:     0.2
-    priority:    5
-    short_desc:  "Input for autonomous navigation"
-  - name:        "Default"
-    topic:       "input/default"
-    timeout:     1.0
     priority:    0
-    short_desc:  "Default input, lowest priority"
+    short_desc:  "Input for autonomous navigation"
+    
 publisher:       "output"
