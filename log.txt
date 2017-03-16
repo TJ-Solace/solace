@@ -91,3 +91,12 @@ Set up new racecar workspace with OpenCV4Tegra
 Updated install script
 Set up networking on TX1
 Use new teleop config
+
+3/10/17
+Created mapping launch file
+Installed ZED SDK
+
+3/13/17
+Calibrated ZED
+Fixed Gmapping
+Created a map!
