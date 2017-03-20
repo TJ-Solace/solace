@@ -1,6 +1,12 @@
 <launch>
   <master auto="start">
 
+  <!-- teleop -->
+  <include file="$(find solace)/launch/includes/racecar-v2-teleop.launch.xml">
+    <arg name="racecar_version" value="racecar-v2" />
+    <arg name="run_camera" value="true" />
+  </include>
+
   <!-- map server -->
   <arg name="map" default="$(find solace)/maps/short-course-33.yml" />
   <node name="map_server" pkg="map_server" type="map_server" args="$(arg map)" />
