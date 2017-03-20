@@ -126,6 +126,9 @@ catkin_package(
         dynamic_reconfigure
         tf2_ros
         pcl_conversions
+	gmapping
+	razor_imu_9dof
+	move_base
 )
 
 ###########
