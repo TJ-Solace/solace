@@ -100,3 +100,7 @@ Installed ZED SDK
 Calibrated ZED
 Fixed Gmapping
 Created a map!
+
+3/20/17
+Got Hokuyo working with rviz locally
+Created launch files for ZED
