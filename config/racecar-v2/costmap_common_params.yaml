@@ -5,4 +5,4 @@ inflation_radius: 0.5
 
 observation_sources: laser_scan_sensor
 
-laser_scan_sensor: {sensor_frame: map_frame, data_type: LaserScan, topic: scan, marking: true, clearing: true}
+laser_scan_sensor: {sensor_frame: map, data_type: LaserScan, topic: scan, marking: true, clearing: true}
