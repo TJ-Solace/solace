@@ -104,3 +104,9 @@ Created a map!
 3/20/17
 Got Hokuyo working with rviz locally
 Created launch files for ZED
+
+3/22/17
+Laser printed acryllic mount
+
+3/29/17
+Worked on mount for ZED
