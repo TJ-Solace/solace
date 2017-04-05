@@ -110,3 +110,10 @@ Laser printed acryllic mount
 
 3/29/17
 Worked on mount for ZED
+
+3/31/17
+Put mount together
+
+4/3/17
+Create navigation map server node
+Update launch files
