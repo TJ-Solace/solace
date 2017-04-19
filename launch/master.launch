@@ -1,0 +1,16 @@
+<launch>
+  <!-- teleop -->
+  <include file="$(find solace)/launch/includes/racecar-v2-teleop.launch.xml">
+    <arg name="racecar_version" value="racecar-v2" />
+    <arg name="run_camera" value="true" />
+  </include>
+
+  <!-- navigation stack -->
+  <include file="$(find solace)/launch/move_base.launch" />
+
+  <!-- navigation map server -->
+  <node name="navigation_map_server" type="navigation_map_server.py" pkg="solace" />
+
+  <!-- lost detector -->
+  <node name="lost_detector" type="lost_detector.py" pkg="solace" />
+</launch>

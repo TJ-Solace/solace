@@ -16,7 +16,7 @@ find_package(catkin REQUIRED COMPONENTS
         )
 
 find_package(ZED REQUIRED)
-find_package(OpenCV 3.1 COMPONENTS core highgui imgproc features2d REQUIRED)
+find_package(OpenCV 2.4 COMPONENTS core highgui imgproc features2d REQUIRED)
 find_package(CUDA 8.0 REQUIRED)
 find_package(PCL REQUIRED)
 #find_package(Eigen3 COMPONENTS core REQUIRED)
@@ -126,6 +126,9 @@ catkin_package(
         dynamic_reconfigure
         tf2_ros
         pcl_conversions
+	gmapping
+	razor_imu_9dof
+	move_base
 )
 
 ###########

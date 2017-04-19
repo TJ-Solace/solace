@@ -69,6 +69,51 @@ Updated install script
 
 12/9/16
 Fixed PCL
-Installed ROS wrapper on TX1
+Installed ZED ROS wrapper on TX1
 Updated install script
 Worked on blob detector
+
+12/16/16
+Got blob detector to work with OpenCV 3
+Fixed GitHub commit problems
+
+3/3/17
+Attempted to install new racecar image
+Switched to Ubuntu 14.04 on host computer to flash Jetson
+Created new VM from scratch for new racecar package
+
+3/6/17
+Flashed clean TX1 image after two attempts to install new Jetson image
+Installed racecar and solace packages in new VM
+
+3/8/17
+Set up new racecar workspace with OpenCV4Tegra
+Updated install script
+Set up networking on TX1
+Use new teleop config
+
+3/10/17
+Created mapping launch file
+Installed ZED SDK
+
+3/13/17
+Calibrated ZED
+Fixed Gmapping
+Created a map!
+
+3/20/17
+Got Hokuyo working with rviz locally
+Created launch files for ZED
+
+3/22/17
+Laser printed acryllic mount
+
+3/29/17
+Worked on mount for ZED
+
+3/31/17
+Put mount together
+
+4/3/17
+Create navigation map server node
+Update launch files
