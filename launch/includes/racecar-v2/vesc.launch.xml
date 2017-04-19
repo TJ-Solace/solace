@@ -2,7 +2,7 @@
 <launch>
   <arg name="racecar_version" />
 
-  <arg name="vesc_config" default="$(find racecar)/config/$(arg racecar_version)/vesc.yaml" />
+  <arg name="vesc_config" default="$(find solace)/config/$(arg racecar_version)/vesc.yaml" />
   <rosparam file="$(arg vesc_config)" command="load" />
 
   <node pkg="vesc_ackermann" type="ackermann_to_vesc_node" name="ackermann_to_vesc">
