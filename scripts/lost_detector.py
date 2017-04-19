@@ -12,7 +12,7 @@ class LostDetector:
         self.is_lost = False
         self.msg = Bool()
         self.lost_start = rospy.get_time()
-    
+
     def poses_cb(self, msg):
         if len(msg.poses) > 1500:  # lost
             if not self.is_lost:

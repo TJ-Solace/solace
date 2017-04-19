@@ -10,7 +10,7 @@ class ObjectDetector:
     def __init__(self):
         self.object_pub = rospy.Publisher("objects", ObjectDetections, queue_size=0)
         self.scan_sub = rospy.Subscriber("scan", LaserScan, self.scan_cb)
-    
+
     def scan_cb(self, msg):
         lefts = []
         rights = []
@@ -18,7 +18,7 @@ class ObjectDetector:
         running_sum = count_object = count_far = 0
         min_object = 100000  # closest point of object
         for i, r in enumerate(msg.ranges):
-            if r < 5 and (not count_object or abs(r - running_sum/count_object) < 0.1):  # if same object or new object
+            if r < 5 and (not count_object or abs(r - running_sum / count_object) < 0.1):  # if same object or new object
                 running_sum += r
                 count_object += 1
                 count_far = 0
@@ -26,21 +26,21 @@ class ObjectDetector:
             else:
                 count_far += 1
                 if count_far == 15 and count_object:
-                    #avg_r = running_sum / count_object
-                    #width = count_close / 1080 * 3/2 * math.pi * avg_r  # arc length
-                    #if width > .005:  # if width of object larger than 1 cm
+                    # avg_r = running_sum / count_object
+                    # width = count_close / 1080 * 3/2 * math.pi * avg_r  # arc length
+                    # if width > .005:  # if width of object larger than 1 cm
                     if count_object > 15:  # detected an actual object
-			lefts.append((i-count_far-count_object) / 4)
-                        rights.append((i-count_far) / 4)
+                        lefts.append((i - count_far - count_object) / 4)
+                        rights.append((i - count_far) / 4)
                         dists.append(min_object)
                     running_sum = 0
                     count_object = 0
                     min_object = 100000
         if count_object:  # check last window
-            #width = count_close / 1080 * 3/2 * math.pi * avg_r  # arc length
-            #if width > .005:  # if width of object larger than 1 cm
+            # width = count_close / 1080 * 3/2 * math.pi * avg_r  # arc length
+            # if width > .005:  # if width of object larger than 1 cm
             if count_object > 15:
-                lefts.append((1080-count_far-count_object) / 4)
+                lefts.append((1080 - count_far - count_object) / 4)
                 rights.append(1080 / 4)
                 dists.append(min_object)
         if dists:  # only publish if objects detected
@@ -48,9 +48,9 @@ class ObjectDetector:
             detections.lefts = lefts  # in degrees
             detections.rights = rights  # in degrees
             detections.dists = dists
-	    print "Lefts: {}".format(lefts)
-	    print "Rights: {}".format(rights)
-	    print "Dists: {}\n".format(dists)
+            print "Lefts: {}".format(lefts)
+            print "Rights: {}".format(rights)
+            print "Dists: {}\n".format(dists)
             self.object_pub.publish(detections)
 
 
