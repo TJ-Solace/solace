@@ -26,6 +26,7 @@ class JoyController:
         self.killed = False
         self.mode = 0
         self.braking = False
+	print "Initialized teleop"
         # 0 == duty cycle
         # 1 == current
         # 2 == speed
@@ -65,10 +66,13 @@ class JoyController:
 
         if msg.buttons[0]:
             self.mode = 0
+	    print "duty cycle mode"
         elif msg.buttons[1]:
             self.mode = 1
+	    print "current mode"
         elif msg.buttons[2]:
             self.mode = 2
+	    print "speed mode"
 
         if -(msg.axes[5] - 1) > 0.01:
             self.braking = True
@@ -96,6 +100,7 @@ class JoyController:
 
     def setDuty(self, duty):
         cmd = Float64()
+	print "Duty command is " + str(duty)
         self.duty_pub.publish(cmd)
 
     def setCurrent(self, current):
