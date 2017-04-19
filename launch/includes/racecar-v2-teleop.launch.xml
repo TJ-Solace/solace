@@ -10,7 +10,7 @@
     </include>
 
     <!-- Spawn MUXs -->
-    <include file="$(find solace)/launch/mux.launch" />
+    <!--<include file="$(find solace)/launch/mux.launch" />-->
 
     <!-- start electronic speed controller driver -->
     <include file="$(find solace)/launch/includes/$(arg racecar_version)/vesc.launch.xml" >
