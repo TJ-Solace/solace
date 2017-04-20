@@ -7,6 +7,7 @@
 
   <!-- navigation stack -->
   <include file="$(find solace)/launch/move_base.launch" />
+  <node name="navigation_twist_to_vesc" type="navigation_twist_to_vesc.py" pkg="solace" />
 
   <!-- navigation map server -->
   <node name="navigation_map_server" type="navigation_map_server.py" pkg="solace" />
