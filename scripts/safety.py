@@ -13,7 +13,10 @@ class SafetyController:
     def objects_cb(self, msg):
         self.objects_sub.unregister()
         for o in range(len(msg.dists)):
-            if msg.dists[o] < .5 and ((120 < msg.lefts[o] and msg.lefts[o] < 150) or (120 < msg.rights[o] and msg.rights[o] < 150) or (msg.lefts[o] < 120 and msg.rights[o] > 150)):
+            if msg.dists[o] < .5 and (
+                            (120 < msg.lefts[o] and msg.lefts[o] < 150) or (
+                                120 < msg.rights[o] and msg.rights[o] < 150) or (
+                                    msg.lefts[o] < 120 and msg.rights[o] > 150)):
                 stop = AckermannDriveStamped()
                 stop.header.stamp = rospy.Time.now()
                 stop.drive.speed = -1

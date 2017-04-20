@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 
 import rospy
-import math
-from ackermann_msgs.msg import AckermannDriveStamped
 from sensor_msgs.msg import Joy
 from std_msgs.msg import Float64
 

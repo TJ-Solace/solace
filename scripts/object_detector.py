@@ -3,7 +3,6 @@
 import rospy
 from sensor_msgs.msg import LaserScan
 from solace.msg import ObjectDetections
-import math
 
 
 class ObjectDetector:
@@ -18,7 +17,8 @@ class ObjectDetector:
         running_sum = count_object = count_far = 0
         min_object = 100000  # closest point of object
         for i, r in enumerate(msg.ranges):
-            if r < 5 and (not count_object or abs(r - running_sum / count_object) < 0.1):  # if same object or new object
+            if r < 5 and (
+                        not count_object or abs(r - running_sum / count_object) < 0.1):  # if same object or new object
                 running_sum += r
                 count_object += 1
                 count_far = 0

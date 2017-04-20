@@ -1,16 +1,14 @@
 #!/usr/bin/env python
 
 import numpy as np
+
 import cv2
 import rospy
+from cv_bridge import CvBridge
+from geometry_msgs.msg import Point
 from sensor_msgs.msg import Image
-from cv_bridge import CvBridge, CvBridgeError
 # import threading
 from solace.msg import BlobDetections
-from geometry_msgs.msg import Point
-import math
-import time
-import sys
 
 
 class BlobDetector:
@@ -60,7 +58,9 @@ class BlobDetector:
                 msg_loc = Point()
                 msg_loc.x, msg_loc.y = float(center[0]) / len(im[0]), float(center[1]) / len(im)
                 self.msg.locations.append(msg_loc)
-                self.msg.heights.append(float((max(approx, key=lambda x: x[0][1])[0][1] - min(approx, key=lambda x: x[0][1])[0][1])) / len(im))
+                self.msg.heights.append(
+                    float((max(approx, key=lambda x: x[0][1])[0][1] - min(approx, key=lambda x: x[0][1])[0][1])) / len(
+                        im))
                 cv2.putText(im, label_color, center, cv2.FONT_HERSHEY_PLAIN, 2, (100, 255, 100))
                 print "Label color:  {}".format(label_color)
 

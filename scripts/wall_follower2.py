@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 
+import collections
+import time
+
 import rospy
-from sensor_msgs.msg import LaserScan
 from ackermann_msgs.msg import AckermannDriveStamped
-from std_msgs.msg import Bool, Float64
-import time, collections
+from sensor_msgs.msg import LaserScan
+from std_msgs.msg import Float64
 
 
 class WallFollower():

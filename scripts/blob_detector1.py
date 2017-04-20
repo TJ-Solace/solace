@@ -1,18 +1,17 @@
 #!/usr/bin/env python
 
 import numpy as np
+import time
+
 import cv2
 import rospy
-
+from cv_bridge import CvBridge
 from sensor_msgs.msg import Image
-from cv_bridge import CvBridge, CvBridgeError
 # from racecar_wk3.msg import BlobDetections
 from std_msgs.msg import String
-# from geometry_msgs.msg import Point
 
-import math
-import time
-import sys
+
+# from geometry_msgs.msg import Point
 
 
 class BlobDetector:
@@ -59,7 +58,9 @@ class BlobDetector:
                 im = passed_im.copy()
                 cv2.putText(im, "{} rectangle".format(label_color), center, cv2.FONT_HERSHEY_PLAIN, 2, (100, 255, 100))
                 cv2.drawContours(im, [approx], -1, (100, 255, 100), 2)
-                cv2.imwrite("/home/ubuntu/challenge_photos1/{}rectangle{}.png".format(label_color, int(time.clock() * 1000)), im)
+                cv2.imwrite(
+                    "/home/ubuntu/challenge_photos1/{}rectangle{}.png".format(label_color, int(time.clock() * 1000)),
+                    im)
                 print "{}square".format(label_color)
             elif abs(len(approx) - 12) <= 1:  # cross
                 approx_contours.append(approx)
@@ -71,7 +72,8 @@ class BlobDetector:
                 im = passed_im.copy()
                 cv2.putText(im, "{} cross".format(label_color), center, cv2.FONT_HERSHEY_PLAIN, 2, (100, 255, 100))
                 cv2.drawContours(im, [approx], -1, (100, 255, 100), 2)
-                cv2.imwrite("/home/ubuntu/challenge_photos1/{}cross{}.png".format(label_color, int(time.clock() * 1000)), im)
+                cv2.imwrite(
+                    "/home/ubuntu/challenge_photos1/{}cross{}.png".format(label_color, int(time.clock() * 1000)), im)
                 print "{}cross".format(label_color)
             elif abs(len(approx) - 8) <= 2:  # circle
 
@@ -84,7 +86,8 @@ class BlobDetector:
                 im = passed_im.copy()
                 cv2.putText(im, "{} circle".format(label_color), center, cv2.FONT_HERSHEY_PLAIN, 2, (100, 255, 100))
                 cv2.drawContours(im, [approx], -1, (100, 255, 100), 2)
-                cv2.imwrite("/home/ubuntu/challenge_photos1/{}circle{}.png".format(label_color, int(time.clock() * 1000)), im)
+                cv2.imwrite(
+                    "/home/ubuntu/challenge_photos1/{}circle{}.png".format(label_color, int(time.clock() * 1000)), im)
                 print "{}circle".format(label_color)
             if self.isTesting:
                 cv2.drawContours(self.image, approx_contours, -1, (100, 255, 100), 2)

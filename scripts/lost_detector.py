@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
 import rospy
-from std_msgs.msg import Bool
 from geometry_msgs.msg import PoseArray
+from std_msgs.msg import Bool
 
 
 class LostDetector:
