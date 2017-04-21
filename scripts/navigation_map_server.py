@@ -15,7 +15,12 @@ class NavigationMapServer:
 
     def map_cb(self, msg):
         altered_map = OccupancyGrid()
+
+        # TODO: Stitch maps if lost
+
+        # Set all unknown space as open
         altered_map.data = [cell if cell != -1 else 0 for cell in msg.data]
+        
         self.map_pub.publish(altered_map)
 
 
