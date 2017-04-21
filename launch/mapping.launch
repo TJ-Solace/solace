@@ -14,29 +14,14 @@
     <param name="base_frame" value="base_link"/>
     <param name="map_frame" value="gmapping_map"/>
     <!--<param name="odom_frame" value="hector_map"/>-->
+    <param name="particles" value="30"/>
     <param name="maxUrange" value="8"/>
     <param name="maxRange" value="12"/>
-    <param name="particles" value="60"/>
     <param name="delta" value="$(arg resolution)"/>
-    <!--
-    <param name="srr" value=".05"/>
-    <param name="srt" value=".10"/>
-    <param name="str" value=".05"/>
-    <param name="stt" value=".10"/>
-    <param name="linearUpdate" value=".01"/>
-    <param name="angularUpdate" value=".05"/>    
-    <param name="temporalUpdate" value="1"/>
-    <param name="map_udpate_interval" value="1.0"/>
-    <param name="particles" value="30"/>
-    <param name="delta" value="0.1"/>
-    <param name="minimumScore" value="50"/>
-    <param name="iterations" value="10"/>
-    <param name="occ_thresh" value="0.25"/>
-    <param name="srr" value=".01"/>
-    <param name="srt" value=".02"/>
-    <param name="str" value=".01"/>
-    <param name="stt" value=".02"/>
-    -->
+    <param name="linearUpdate" value=".10"/>
+    <param name="angularUpdate" value=".10"/>    
+    <param name="temporalUpdate" value="1.0"/>
+    <param name="map_update_interval" value="2.0"/>
   </node>
 
 </launch>
