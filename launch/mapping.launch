@@ -22,6 +22,10 @@
     <param name="angularUpdate" value=".10"/>    
     <param name="temporalUpdate" value="1.0"/>
     <param name="map_update_interval" value="2.0"/>
+    <param name="xmin" value="-10.0"/>
+    <param name="xmax" value="10.0"/>
+    <param name="ymin" value="-10.0"/>
+    <param name="ymax" value="10.0"/>
   </node>
 
 </launch>
