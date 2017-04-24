@@ -20,7 +20,10 @@ class NavigationTwistToVESC:
 
     def vel_cb(self, msg):
         self.drive_msg.power = math.sqrt(msg.linear.x ** 2 + msg.linear.y ** 2)
-        self.drive_msg.steering = msg.angular.z
+        # TODO: check if steering angle is calculated correctly (negate? switch y and x?)
+        self.drive_msg.steering = math.atan2(msg.linear.y, msg.linear.x) / math.pi
+        if self.drive_msg.power < 0:  # negate angle if driving backwards
+            self.drive_msg.steering *= -1
 
         self.drive_pub.publish(self.drive_msg)
 
