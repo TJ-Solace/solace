@@ -9,6 +9,11 @@
   <include file="$(find solace)/launch/move_base.launch" />
   <node name="navigation_twist_to_vesc" type="navigation_twist_to_vesc.py" pkg="solace" />
 
+  <!-- map saver -->
+  <node name="map_saver" type="map_saver" pkg="map_server">
+    <remap from="map" to="disk_map"/>
+  </node>
+
   <!-- navigation map server -->
   <node name="navigation_map_server" type="navigation_map_server.py" pkg="solace" />
 
