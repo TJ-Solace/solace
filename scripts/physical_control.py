@@ -6,8 +6,8 @@ from std_msgs.msg import Bool, Float64
 
 
 class PhysicalControl():
-    steering_mid = 0.5
-    steering_mult = 0.5
+    steering_mid = 0.463
+    steering_mult = 0.45
     power_mult = 20000
 
     def __init__(self):
