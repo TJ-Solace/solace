@@ -29,11 +29,14 @@ class NavigationMapServer:
                 self.disk_map_pub.publish(self.map_msg)
         else:
             self.map_msg = msg
+        actual_map = self.map_msg.data
 
         # Set all unknown space as open
         self.map_msg.data = [cell if cell != -1 else 0 for cell in self.map_msg.data]
-
         self.map_pub.publish(self.map_msg)
+
+        # Revert to actual map
+        self.map_msg.data = actual_map
 
     def lost_cb(self, msg):
         self.is_lost = msg.data
