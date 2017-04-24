@@ -19,23 +19,21 @@ class NavigationMapServer:
 
         self.is_lost = False
         self.map_msg = OccupancyGrid()
-        self.map_pub_count = 0
+        self.lost_count = 0
 
     def map_cb(self, msg):
         # TODO: Stitch maps if lost and update map_msg metadata
         if self.is_lost:
-            pass
+            self.lost_count += 1
+            if self.lost_count % 5 == 0:  # update map on disk every 5 updates
+                self.disk_map_pub.publish(self.map_msg)
         else:
             self.map_msg = msg
-
-        if self.map_pub_count % 5 == 0:  # update map on disk every 5 updates
-            self.disk_map_pub.publish(self.map_msg)
 
         # Set all unknown space as open
         self.map_msg.data = [cell if cell != -1 else 0 for cell in self.map_msg.data]
 
         self.map_pub.publish(self.map_msg)
-        self.map_pub_count += 1
 
     def lost_cb(self, msg):
         self.is_lost = msg.data
