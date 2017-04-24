@@ -11,23 +11,25 @@ class NavigationMapServer:
     """
 
     def __init__(self):
-        self.map_pub = rospy.Publisher("navigation_map", OccupancyGrid, queue_size=0)
+        self.map_pub = rospy.Publisher("navigation_map", OccupancyGrid, queue_size=0, latch=True)
         self.map_sub = rospy.Subscriber("map", OccupancyGrid, self.map_cb)
         self.lost_sub = rospy.Subscriber("is_lost", Bool, self.lost_cb)
 
         self.is_lost = False
+        self.map_msg = OccupancyGrid()
+
 
     def map_cb(self, msg):
-        altered_map = OccupancyGrid()
-
-        # TODO: Stitch maps if lost
+        # TODO: Stitch maps if lost and update map_msg metadata
         if self.is_lost:
             pass
+        else:
+            self.map_msg = msg
 
         # Set all unknown space as open
-        altered_map.data = [cell if cell != -1 else 0 for cell in msg.data]
-        
-        self.map_pub.publish(altered_map)
+        self.map_msg.data = [cell if cell != -1 else 0 for cell in self.map_msg.data]
+
+        self.map_pub.publish(self.map_msg)
 
     def lost_cb(self, msg):
         self.is_lost = msg.data
