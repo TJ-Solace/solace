@@ -107,6 +107,7 @@ Created launch files for ZED
 
 3/22/17
 Laser printed acryllic mount
+Created lost detection node
 
 3/29/17
 Worked on mount for ZED
@@ -117,3 +118,14 @@ Put mount together
 4/3/17
 Create navigation map server node
 Update launch files
+
+4/19/17
+Tuned VESC
+Got teleop working
+Got wall follower working
+Created map with gmapping
+
+4/24/17
+Created physical control node
+Fixed node that translates navigation stack twist to physical control command
+Tuned gmapping parameters
