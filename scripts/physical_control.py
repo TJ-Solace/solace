@@ -12,9 +12,11 @@ class ExpSmoother():
         self.alpha = alpha
         self.lastSample = 0
         self.lastRet = 0
-        self.lastTime = 0
+        self.lastTime = None
 
     def sample(self, sample, time):
+        if self.lastTime is None:
+            return 0
         dt = (time.secs - self.lastTime.secs) * 10**9 + (time.nsecs - self.lastTime.nsecs)
         a = dt / self.alpha
         u = exp(-1 * a)
