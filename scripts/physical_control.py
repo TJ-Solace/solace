@@ -8,8 +8,8 @@ from std_msgs.msg import Float64, Header
 
 
 class ExpSmoother():
-    def __init__(self, alpha):
-        self.alpha = alpha
+    def __init__(self, timeConst):
+        self.timeConst = timeConst
         self.lastSample = 0
         self.lastRet = 0
         self.lastTime = None
@@ -17,8 +17,8 @@ class ExpSmoother():
     def sample(self, sample, time):
         if self.lastTime is None:
             return 0
-        dt = (time.secs - self.lastTime.secs) * 10**9 + (time.nsecs - self.lastTime.nsecs)
-        a = dt / self.alpha
+        dt = (time - self.lastTime).to_sec()
+        a = dt / self.timeConst
         u = exp(-1 * a)
         v = (1 - u) / a
         ret = (u * self.lastRet) + ((v - u) * self.lastSample) + ((1.0 - v) * sample)
@@ -34,12 +34,13 @@ class PhysicalControl():
     power_mult = 20000
 
     max_current = 60.0
-    min_voltage = 3.5 * 4
+    min_voltage = 3.5 * 4  # min 3.5 volts per cell
 
-    power_input_smoothing_rate = 0.9  # currently blind guess, probably empirically determined eventually
+    # time constant for the exponential weighting in seconds- 68% of the output comes from 1tc in the past or less
+    power_input_smoothing_tc = 0.15  # just trying to stop really agressive reversal in direction
 
-    current_input_smoothing_rate = 0.99  # currently blind guess, ditto
-    voltage_input_smoothing_rate = 0.5  # currently blind guess, ditto
+    current_input_smoothing_tc = 0.05  # only trying to smooth out the very sharp current spikes
+    voltage_input_smoothing_tc = 3  # not looking for sudden drops, looking for longish-term trend of the battery being low
 
     def __init__(self):
         self.power_pub = rospy.Publisher("/vesc/commands/motor/speed", Float64, queue_size=0)
@@ -48,9 +49,9 @@ class PhysicalControl():
         self.vesc_sub = rospy.Subscriber("/vesc/sensors/core", VescStateStamped, self.drive)
         self.desired_speed = 0
         self.desired_angle = 0
-        self.current_smoother = ExpSmoother(self.current_input_smoothing_rate)  # try to ignore the short and reasonably short current transients
-        self.voltage_smoother = ExpSmoother(self.voltage_input_smoothing_rate)  # ignore heavy voltage drop transients from the same
-        self.power_smoother = ExpSmoother(self.power_input_smoothing_rate)  # make the stick inputs chill a little bit
+        self.current_smoother = ExpSmoother(self.current_input_smoothing_tc)  # try to ignore the short and reasonably short current transients
+        self.voltage_smoother = ExpSmoother(self.voltage_input_smoothing_tc)  # ignore heavy voltage drop transients from the same
+        self.power_smoother = ExpSmoother(self.power_input_smoothing_tc)  # make the stick inputs chill a little bit
 
     def command(self, msg):
         thisT = msg.header.stamp
@@ -66,7 +67,7 @@ class PhysicalControl():
             self.steering_pub.publish(self.steering_mid)
             return
         if current > self.max_current:
-            self.desired_speed = self.power_smoother.sample(0, thisT)
+            self.desired_speed = self.power_smoother.sample((msg.state.speed + self.desired_speed) / 2.2, thisT)
         self.power_pub.publish(self.desired_speed)
         self.steering_pub.publish(self.desired_angle)
 
