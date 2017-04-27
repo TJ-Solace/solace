@@ -44,7 +44,7 @@ class JoyController:
         if msg.buttons[5]:
             self.drive_msg.power = 0
             self.drive_msg.steering = 0
-            self.drive_pub.publish(self.drive)
+            self.drive_pub.publish(self.drive_msg)
 
         if self.killed:
             return
@@ -53,18 +53,18 @@ class JoyController:
             self.braking = True
             self.drive_msg.power = 0
             self.drive_msg.steering = 0
-            self.drive_pub.publish(self.drive)
+            self.drive_pub.publish(self.drive_msg)
             return
 
         if self.braking:
             self.braking = False
             self.drive_msg.power = 0
             self.drive_msg.steering = 0
-            self.drive_pub.publish(self.drive)
+            self.drive_pub.publish(self.drive_msg)
         else:
             self.drive_msg.power = msg.axes[1] 
             self.drive_msg.steering = msg.axes[3]
-            self.drive_pub.publish(self.drive)
+            self.drive_pub.publish(self.drive_msg)
 
 
 if __name__ == "__main__":

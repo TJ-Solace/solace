@@ -9,4 +9,6 @@
     <arg name="run_camera" value="$(arg run_camera)" />
   </include>
 
+  <node name="physical_control" pkg="solace" type="physical_control.py" />
+
 </launch>
