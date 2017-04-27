@@ -47,16 +47,16 @@ class PhysicalControl():
         self.steering_pub = rospy.Publisher("/vesc/commands/servo/position", Float64, queue_size=0)
         self.scan_sub = rospy.Subscriber("/drive", DriveCommand, self.command)
         self.vesc_sub = rospy.Subscriber("/vesc/sensors/core", VescStateStamped, self.drive)
-        self.desired_speed = 0
-        self.desired_angle = 0
+        self.desired_speed = Float64()
+        self.desired_angle = Float64()
         self.current_smoother = ExpSmoother(self.current_input_smoothing_tc)  # try to ignore the short and reasonably short current transients
         self.voltage_smoother = ExpSmoother(self.voltage_input_smoothing_tc)  # ignore heavy voltage drop transients from the same
         self.power_smoother = ExpSmoother(self.power_input_smoothing_tc)  # make the stick inputs chill a little bit
 
     def command(self, msg):
         thisT = msg.header.stamp
-        self.desired_angle = msg.steering * self.steering_mult + self.steering_mid
-        self.desired_speed = self.power_smoother.sample(msg.power * self.power_mult, thisT)
+        self.desired_angle.data = msg.steering * self.steering_mult + self.steering_mid
+        self.desired_speed.data = self.power_smoother.sample(msg.power * self.power_mult, thisT)
 
     def drive(self, msg):
         thisT = msg.header.stamp
