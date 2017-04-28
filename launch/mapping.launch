@@ -1,14 +1,8 @@
 <!-- -*- mode: XML -*- -->
 <launch>
-  <arg name="racecar_version" default="racecar-v2" />
-  <arg name="run_camera" default="false"/>
   <arg name="resolution" default="0.05"/>
 
-
-  <include file="$(find solace)/launch/includes/$(arg racecar_version)-teleop.launch.xml">
-    <arg name="racecar_version" value="$(arg racecar_version)" />
-    <arg name="run_camera" value="$(arg run_camera)" />
-  </include>
+  <include file="$(find solace)/launch/teleop.launch" />
 
   <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping" output="screen">
     <param name="base_frame" value="base_link"/>
