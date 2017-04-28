@@ -10,18 +10,20 @@ from std_msgs.msg import Float64, Header
 class ExpSmoother():
     def __init__(self, timeConst):
         self.timeConst = timeConst
-        self.lastSample = 0
-        self.lastRet = 0
+        self.lastSample = 0.0
+        self.lastRet = 0.0
         self.lastTime = None
 
     def sample(self, sample, time):
         if self.lastTime is None:
             self.lastTime = time
-            return 0
+            return 0.0
         dt = (time - self.lastTime).to_sec()
+	if dt == 0:
+	    return 0.0
         a = dt / self.timeConst
-        u = exp(-1 * a)
-        v = (1 - u) / a
+        u = exp(-1.0 * a)
+        v = (1.0 - u) / a
         ret = (u * self.lastRet) + ((v - u) * self.lastSample) + ((1.0 - v) * sample)
         self.lastRet = ret
         self.lastSample = sample
@@ -41,7 +43,7 @@ class PhysicalControl():
     power_input_smoothing_tc = 0.15  # just trying to stop really agressive reversal in direction
 
     current_input_smoothing_tc = 0.05  # only trying to smooth out the very sharp current spikes
-    voltage_input_smoothing_tc = 3  # not looking for sudden drops, looking for longish-term trend of the battery being low
+    voltage_input_smoothing_tc = 3.0  # not looking for sudden drops, looking for longish-term trend of the battery being low
 
     def __init__(self):
         self.power_pub = rospy.Publisher("/vesc/commands/motor/speed", Float64, queue_size=0)
@@ -57,16 +59,19 @@ class PhysicalControl():
     def command(self, msg):
         thisT = msg.header.stamp
         self.desired_angle.data = msg.steering * self.steering_mult + self.steering_mid
-        self.desired_speed.data = self.power_smoother.sample(msg.power * self.power_mult, thisT)
+        #self.desired_speed.data = self.power_smoother.sample(msg.power * self.power_mult, thisT)
+        self.desired_speed.data = msg.power * self.power_mult
 
     def drive(self, msg):
         thisT = msg.header.stamp
         current = self.current_smoother.sample(msg.state.current_motor, thisT)
         voltage = self.voltage_smoother.sample(msg.state.voltage_input, thisT)
-        if voltage < self.min_voltage:
+        """
+	if voltage < self.min_voltage:
             self.power_pub.publish(0)
             self.steering_pub.publish(self.steering_mid)
             return
+	"""
         if current > self.max_current:
             self.desired_speed = self.power_smoother.sample((msg.state.speed + self.desired_speed) / 2.2, thisT)
         self.power_pub.publish(self.desired_speed)
