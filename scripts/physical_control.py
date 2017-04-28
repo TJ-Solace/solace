@@ -16,6 +16,7 @@ class ExpSmoother():
 
     def sample(self, sample, time):
         if self.lastTime is None:
+            self.lastTime = time
             return 0
         dt = (time - self.lastTime).to_sec()
         a = dt / self.timeConst
