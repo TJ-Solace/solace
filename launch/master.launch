@@ -1,9 +1,6 @@
 <launch>
   <!-- teleop -->
-  <include file="$(find solace)/launch/includes/racecar-v2-teleop.launch.xml">
-    <arg name="racecar_version" value="racecar-v2" />
-    <arg name="run_camera" value="true" />
-  </include>
+  <include file="$(find solace)/launch/teleop.launch" />
 
   <!-- navigation stack -->
   <include file="$(find solace)/launch/move_base.launch" />
