@@ -1,0 +1,5 @@
+<!-- -*- mode: XML -*- -->
+<launch>
+  <include file="$(find solace)/launch/teleop.launch" />
+  <include file="$(find solace)/launch/mapping.launch" />
+</launch>
