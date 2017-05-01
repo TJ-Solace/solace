@@ -25,6 +25,7 @@ class NavigationTwistToVESC:
         if self.drive_msg.power < 0:  # negate angle if driving backwards
             self.drive_msg.steering *= -1
 
+        self.drive_msg.header.stamp = rospy.Time.now()
         self.drive_pub.publish(self.drive_msg)
 
 

@@ -44,6 +44,7 @@ class JoyController:
         if msg.buttons[5]:
             self.drive_msg.power = 0
             self.drive_msg.steering = 0
+            self.drive_msg.header.stamp = rospy.Time.now()
             self.drive_pub.publish(self.drive_msg)
 
         if self.killed:
@@ -53,6 +54,7 @@ class JoyController:
             self.braking = True
             self.drive_msg.power = 0
             self.drive_msg.steering = 0
+            self.drive_msg.header.stamp = rospy.Time.now()
             self.drive_pub.publish(self.drive_msg)
             return
 
@@ -60,10 +62,12 @@ class JoyController:
             self.braking = False
             self.drive_msg.power = 0
             self.drive_msg.steering = 0
+            self.drive_msg.header.stamp = rospy.Time.now()
             self.drive_pub.publish(self.drive_msg)
         else:
             self.drive_msg.power = msg.axes[1] 
             self.drive_msg.steering = -msg.axes[3]
+            self.drive_msg.header.stamp = rospy.Time.now()
             self.drive_pub.publish(self.drive_msg)
 
 
