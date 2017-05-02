@@ -36,6 +36,7 @@ class PhysicalControl():
     steering_mult = 0.45
     power_mult = 20000.0
 
+    magic_current_number = 0.66  # numbers close to 1 aggressively reduce power on overcurrent, numbers close to 0 make less impact
     max_current = 60.0  # soft max current- set vesc maxima to higher than actually desired and let the node try to help first
     min_voltage = 3.5 * 4  # min 3.5 volts per cell
 
@@ -73,7 +74,7 @@ class PhysicalControl():
             self.steering_pub.publish(self.steering_mid)
             return
         if current > self.max_current:
-            self.desired_speed = self.power_smoother.sample((msg.state.speed + self.desired_speed) / 2.2, thisT)
+            self.desired_speed = self.power_smoother.sample((msg.state.speed * self.magic_current_number + self.desired_speed * (1 - self.magic_current_number)), thisT)
         if abs(msg.state.speed - self.desired_speed) / self.power_mult > 0.25 and ((msg.state.speed > 0 and self.desired_speed < msg.state.speed) or (msg.state.speed < 0 and self.desired_speed > msg.state.speed)):  # if we're reducing speed rapidly, brake
             rospy.loginfo_throttle(0.25, "braking")
             self.brake_pub.publish(self.max_current * 0.66)
