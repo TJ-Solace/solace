@@ -3,6 +3,7 @@
 import math
 
 import rospy
+from std_msgs.msg import Header
 from geometry_msgs.msg import Twist
 from solace.msg import DriveCommand
 
@@ -25,6 +26,7 @@ class NavigationTwistToVESC:
         if self.drive_msg.power < 0:  # negate angle if driving backwards
             self.drive_msg.steering *= -1
 
+        self.drive_msg.header = Header()
         self.drive_msg.header.stamp = rospy.Time.now()
         self.drive_pub.publish(self.drive_msg)
 
