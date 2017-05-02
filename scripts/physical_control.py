@@ -59,9 +59,9 @@ class PhysicalControl():
 
     def command(self, msg):
         thisT = self.get_time(msg.header.stamp)
-        self.desired_angle.data = msg.steering * self.steering_mult + self.steering_mid
-        self.desired_speed.data = self.power_smoother.sample(msg.power * self.power_mult, thisT)
-        # self.desired_speed.data = msg.power * self.power_mult
+        self.desired_angle = msg.steering * self.steering_mult + self.steering_mid
+        self.desired_speed = self.power_smoother.sample(msg.power * self.power_mult, thisT)
+        # self.desired_speed = msg.power * self.power_mult
 
     def drive(self, msg):
         thisT = self.get_time(msg.header.stamp)
