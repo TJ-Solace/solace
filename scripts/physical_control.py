@@ -40,11 +40,11 @@ class PhysicalControl():
     power_mult = 20000.0
 
     magic_current_number = 0.66  # numbers close to 1 aggressively reduce power on overcurrent, numbers close to 0 make less impact
-    max_current = 60.0  # soft max current- set vesc maxima to higher than actually desired and let the node try to help first
+    max_current = 45.0  # soft max current- set vesc maxima to higher than actually desired and let the node try to help first
     min_voltage = 3.2 * 4  # min 3.2 volts per cell
 
     # time constant for the exponential weighting in seconds- 68% of the output comes from 1tc in the past or less
-    power_input_smoothing_tc = 0.2  # just trying to stop really aggressive reversal in direction
+    power_input_smoothing_tc = 0.13  # just trying to stop really aggressive reversal in direction
 
     current_input_smoothing_tc = 0.05  # only trying to smooth out the very sharp current spikes
     voltage_input_smoothing_tc = 3.0  # not looking for sudden drops, looking for longish-term trend of the battery being low
@@ -78,10 +78,11 @@ class PhysicalControl():
             self.steering_pub.publish(self.steering_mid)
             return
         if current > self.max_current:
+	    rospy.loginfo_throttle(0.1, "current limiting: " + repr(current))
             self.desired_speed = self.power_smoother.sample((msg.state.speed * self.magic_current_number + self.desired_speed * (1 - self.magic_current_number)), thisT)
-        if abs(msg.state.speed - self.desired_speed) / self.power_mult > 0.25 and ((msg.state.speed > 0 and self.desired_speed < msg.state.speed) or (msg.state.speed < 0 and self.desired_speed > msg.state.speed)):  # if we're reducing speed rapidly, brake
+        if abs(msg.state.speed - self.desired_speed) / self.power_mult > 0.15 and ((msg.state.speed > 0 and self.desired_speed < msg.state.speed) or (msg.state.speed < 0 and self.desired_speed > msg.state.speed)):  # if we're reducing speed rapidly, brake
             rospy.loginfo_throttle(0.25, "braking")
-            self.brake_pub.publish(self.max_current * 0.66)
+            self.brake_pub.publish(self.max_current * 0.75)
             return
         self.power_pub.publish(self.desired_speed)
         self.steering_pub.publish(self.desired_angle)
