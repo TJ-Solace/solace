@@ -10,7 +10,7 @@ from std_msgs.msg import Float64, Header
 class ExpSmoother():
     def __init__(self, timeConst, debug=False):
         self.debug = debug
-	self.timeConst = timeConst
+        self.timeConst = timeConst
         self.lastSample = 0.0
         self.lastRet = 0.0
         self.lastTime = None
@@ -27,7 +27,7 @@ class ExpSmoother():
         v = (1.0 - u) / a
         ret = (u * self.lastRet) + ((v - u) * self.lastSample) + ((1.0 - v) * sample)
         if self.debug:
-	    rospy.loginfo_throttle(0.25, "input, output: " + repr(sample) + ", " + repr(ret))  # just to see
+            rospy.loginfo_throttle(0.25, "input, output: " + repr(sample) + ", " + repr(ret))  # just to see
         self.lastRet = ret
         self.lastSample = sample
         self.lastTime = time
@@ -72,25 +72,28 @@ class PhysicalControl():
         rospy.loginfo_throttle(0.25, "actual speed: " + repr(msg.state.speed))  # just to see
         current = self.current_smoother.sample(msg.state.current_motor, thisT)
         voltage = self.voltage_smoother.sample(msg.state.voltage_input, thisT)
-	rospy.loginfo_throttle(0.25, repr(self.desired_speed))
-        if voltage < self.min_voltage:
+        rospy.loginfo_throttle(0.25, repr(self.desired_speed))
+        if voltage < self.min_voltage:  # don't get to do anything if the battery is low
+            rospy.logfatal_throttle(0.1, "Battery is too low! (" + repr(voltage) + "v)")
             self.power_pub.publish(0)
             self.steering_pub.publish(self.steering_mid)
             return
+
+        self.steering_pub.publish(self.desired_angle)
+
         if current > self.max_current:
-	    rospy.loginfo_throttle(0.1, "current limiting: " + repr(current))
+            rospy.loginfo_throttle(0.1, "current limiting: " + repr(current))
             self.desired_speed = self.power_smoother.sample((msg.state.speed * self.magic_current_number + self.desired_speed * (1 - self.magic_current_number)), thisT)
         if abs(msg.state.speed - self.desired_speed) / self.power_mult > 0.15 and ((msg.state.speed > 0 and self.desired_speed < msg.state.speed) or (msg.state.speed < 0 and self.desired_speed > msg.state.speed)):  # if we're reducing speed rapidly, brake
-            rospy.loginfo_throttle(0.25, "braking")
+            rospy.loginfo_throttle(0.1, "braking")
             self.brake_pub.publish(self.max_current * 0.75)
             return
         self.power_pub.publish(self.desired_speed)
-        self.steering_pub.publish(self.desired_angle)
 
     @staticmethod
     def get_time(stamp):
         if stamp is None or stamp.to_sec() < 0.1:
-            rospy.logwarn("received bad header >.>")
+            rospy.logerr("received bad header >.>")
             return rospy.Time.now()
         return stamp
 
