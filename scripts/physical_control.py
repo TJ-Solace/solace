@@ -8,8 +8,9 @@ from std_msgs.msg import Float64, Header
 
 
 class ExpSmoother():
-    def __init__(self, timeConst):
-        self.timeConst = timeConst
+    def __init__(self, timeConst, debug=False):
+        self.debug = debug
+	self.timeConst = timeConst
         self.lastSample = 0.0
         self.lastRet = 0.0
         self.lastTime = None
@@ -25,6 +26,8 @@ class ExpSmoother():
         u = exp(-1.0 * a)
         v = (1.0 - u) / a
         ret = (u * self.lastRet) + ((v - u) * self.lastSample) + ((1.0 - v) * sample)
+        if self.debug:
+	    rospy.loginfo_throttle(0.25, "input, output: " + repr(sample) + ", " + repr(ret))  # just to see
         self.lastRet = ret
         self.lastSample = sample
         self.lastTime = time
@@ -38,7 +41,7 @@ class PhysicalControl():
 
     magic_current_number = 0.66  # numbers close to 1 aggressively reduce power on overcurrent, numbers close to 0 make less impact
     max_current = 60.0  # soft max current- set vesc maxima to higher than actually desired and let the node try to help first
-    min_voltage = 3.5 * 4  # min 3.5 volts per cell
+    min_voltage = 3.2 * 4  # min 3.2 volts per cell
 
     # time constant for the exponential weighting in seconds- 68% of the output comes from 1tc in the past or less
     power_input_smoothing_tc = 0.2  # just trying to stop really aggressive reversal in direction
@@ -55,7 +58,7 @@ class PhysicalControl():
         self.desired_speed = Float64()
         self.desired_angle = Float64()
         self.current_smoother = ExpSmoother(self.current_input_smoothing_tc)  # try to ignore the reasonably short current transients caused by accelerating sharply
-        self.voltage_smoother = ExpSmoother(self.voltage_input_smoothing_tc)  # ignore heavy voltage drop transients from the same
+        self.voltage_smoother = ExpSmoother(self.voltage_input_smoothing_tc, True)  # ignore heavy voltage drop transients from the same
         self.power_smoother = ExpSmoother(self.power_input_smoothing_tc)  # make the stick inputs chill a little bit
 
     def command(self, msg):
@@ -69,6 +72,7 @@ class PhysicalControl():
         rospy.loginfo_throttle(0.25, "actual speed: " + repr(msg.state.speed))  # just to see
         current = self.current_smoother.sample(msg.state.current_motor, thisT)
         voltage = self.voltage_smoother.sample(msg.state.voltage_input, thisT)
+	rospy.loginfo_throttle(0.25, repr(self.desired_speed))
         if voltage < self.min_voltage:
             self.power_pub.publish(0)
             self.steering_pub.publish(self.steering_mid)
@@ -84,7 +88,7 @@ class PhysicalControl():
 
     @staticmethod
     def get_time(stamp):
-        if stamp is None or stamp.to_secs() < 0.1:
+        if stamp is None or stamp.to_sec() < 0.1:
             rospy.logwarn("received bad header >.>")
             return rospy.Time.now()
         return stamp
