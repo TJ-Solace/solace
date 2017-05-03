@@ -20,10 +20,12 @@ class LostDetector:
                 self.lost_start = rospy.get_time()
             elif rospy.get_time() - self.lost_start > 4.0:  # Publish that the car is lost if it's been lost for 4 seconds
                 self.msg.data = True
+                rospy.loginfo("lost!")
                 self.lost_pub.publish(self.msg)
         elif self.is_lost:
             self.is_lost = False
             self.msg.data = False
+            rospy.loginfo("no longer lost!")
             self.lost_pub.publish(self.msg)
 
 
