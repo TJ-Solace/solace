@@ -27,7 +27,7 @@ class ExpSmoother():
         v = (1.0 - u) / a
         ret = (u * self.lastRet) + ((v - u) * self.lastSample) + ((1.0 - v) * sample)
         if self.debug:
-            rospy.loginfo_throttle(0.25, "input, output: " + repr(sample) + ", " + repr(ret))  # just to see
+            rospy.loginfo_throttle(0.5, "input, output: " + repr(sample) + ", " + repr(ret))  # just to see
         self.lastRet = ret
         self.lastSample = sample
         self.lastTime = time
@@ -71,11 +71,11 @@ class PhysicalControl():
 
     def drive(self, msg):
         thisT = self.get_time(msg.header.stamp)
-        rospy.logdebug_throttle(0.25, "actual speed: " + repr(msg.state.speed))  # just to see
+        rospy.logdebug_throttle(0.5, "actual speed: " + repr(msg.state.speed))  # just to see
         current = self.current_smoother.sample(msg.state.current_motor, thisT)
         voltage = self.voltage_smoother.sample(msg.state.voltage_input, thisT)
         if voltage < self.min_voltage:  # don't get to do anything if the battery is low
-            rospy.logfatal_throttle(0.1, "Battery is too low! (" + repr(voltage) + "v)")
+            rospy.logfatal_throttle(0.5, "Battery is too low! (" + repr(voltage) + "v)")
             self.power_pub.publish(0)
             self.steering_pub.publish(self.steering_mid)
             return
@@ -83,10 +83,10 @@ class PhysicalControl():
         self.steering_pub.publish(self.desired_angle)
 
         if current > self.max_current:
-            rospy.logwarn_throttle(0.1, "current limiting: " + repr(current))
+            rospy.logwarn_throttle(0.5, "current limiting: " + repr(current))
             self.desired_speed = self.power_smoother.sample((msg.state.speed * self.magic_current_number + self.desired_speed * (1 - self.magic_current_number)), thisT)
         if abs(msg.state.speed - self.desired_speed) / self.power_mult > 0.15 and ((msg.state.speed > 0 and self.desired_speed < msg.state.speed) or (msg.state.speed < 0 and self.desired_speed > msg.state.speed)):  # if we're reducing speed rapidly, brake
-            rospy.loginfo_throttle(0.1, "braking")
+            rospy.loginfo_throttle(0.5, "braking")
             self.brake_pub.publish(self.max_current * 0.75)
             return
         self.power_pub.publish(self.desired_speed)
