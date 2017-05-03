@@ -6,12 +6,12 @@
     <param name="base_frame" value="base_link" />
     <param name="map_frame" value="gmapping_map" />
     <!--<param name="odom_frame" value="hector_map" />-->
-    <param name="particles" value="40" />
+    <param name="particles" value="30" />
     <param name="maxUrange" value="8" />
     <param name="maxRange" value="12" />
     <param name="delta" value="$(arg resolution)" />
-    <param name="linearUpdate" value=".2" />
-    <param name="angularUpdate" value=".3" />    
+    <param name="linearUpdate" value=".1" />
+    <param name="angularUpdate" value=".1" />    
     <param name="temporalUpdate" value="1.0" />
     <param name="map_update_interval" value="2.0" />
     <param name="xmin" value="-1.0" />
