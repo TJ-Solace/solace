@@ -2,7 +2,7 @@
 
 import rospy
 from sensor_msgs.msg import Joy
-from std_msgs.msg import Float64, Header
+from std_msgs.msg import Float64
 from solace.msg import DriveCommand
 
 
@@ -44,7 +44,6 @@ class JoyController:
         if msg.buttons[5]:
             self.drive_msg.power = 0
             self.drive_msg.steering = 0
-            self.drive_msg.header = Header()
             self.drive_msg.header.stamp = rospy.Time.now()
             self.drive_pub.publish(self.drive_msg)
 
@@ -55,7 +54,6 @@ class JoyController:
             self.braking = True
             self.drive_msg.power = 0
             self.drive_msg.steering = 0
-            self.drive_msg.header = Header()
             self.drive_msg.header.stamp = rospy.Time.now()
             self.drive_pub.publish(self.drive_msg)
             return
@@ -64,13 +62,11 @@ class JoyController:
             self.braking = False
             self.drive_msg.power = 0
             self.drive_msg.steering = 0
-            self.drive_msg.header = Header()
             self.drive_msg.header.stamp = rospy.Time.now()
             self.drive_pub.publish(self.drive_msg)
         else:
             self.drive_msg.power = msg.axes[1] 
             self.drive_msg.steering = -msg.axes[3]
-            self.drive_msg.header = Header()
             self.drive_msg.header.stamp = rospy.Time.now()
             self.drive_pub.publish(self.drive_msg)
 
