@@ -15,7 +15,7 @@ class NavigationTwistToVESC:
 
     def __init__(self):
         self.drive_pub = rospy.Publisher("/drive", DriveCommand, queue_size=0)
-        self.cmd_sub = rospy.Subscriber("/vel_cb", Twist, self.vel_cb)
+        self.cmd_sub = rospy.Subscriber("/cmd_vel", Twist, self.vel_cb)
 
         self.drive_msg = DriveCommand()
 
