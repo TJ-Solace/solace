@@ -7,7 +7,7 @@
   <node name="navigation_twist_to_vesc" type="navigation_twist_to_vesc.py" pkg="solace" />
 
   <!-- map saver -->
-  <node name="map_saver" type="map_saver" pkg="map_server">
+  <node name="map_saver" type="map_saver" pkg="map_server" args="-f gmapping_map">
     <remap from="map" to="disk_map"/>
   </node>
 
