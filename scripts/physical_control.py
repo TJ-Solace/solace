@@ -58,7 +58,7 @@ class PhysicalControl():
         self.desired_speed = Float64()
         self.desired_angle = Float64()
         self.current_smoother = ExpSmoother(self.current_input_smoothing_tc)  # try to ignore the reasonably short current transients caused by accelerating sharply
-        self.voltage_smoother = ExpSmoother(self.voltage_input_smoothing_tc, True)  # ignore heavy voltage drop transients from the same
+        self.voltage_smoother = ExpSmoother(self.voltage_input_smoothing_tc)  # ignore heavy voltage drop transients from the same
         self.voltage_smoother.lastSample = 3.8 * 4  # cheat so it doesn't take a long time to become drivable
         self.voltage_smoother.lastRet = 3.8 * 4
         self.power_smoother = ExpSmoother(self.power_input_smoothing_tc)  # make the stick inputs chill a little bit
