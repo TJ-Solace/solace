@@ -9,6 +9,7 @@
     <param name="particles" value="30" />
     <param name="maxUrange" value="8" />
     <param name="maxRange" value="12" />
+    <param name="minimumScore" value="50" />
     <param name="delta" value="$(arg resolution)" />
     <param name="linearUpdate" value=".1" />
     <param name="angularUpdate" value=".1" />    
