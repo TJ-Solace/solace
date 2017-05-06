@@ -39,8 +39,9 @@ class NavigationMapServer:
                     self.map_msg.header.stamp = rospy.Time.now()
                     self.map_msg.info.map_load_time = rospy.Time.now()
                     self.file_to_occupancygrid(FULL_MAP_PATH, self.map_msg)
+                    rospy.loginfo("successfully stitched new map!")
                 except subprocess.CalledProcessError:
-                    print "failed to stitch!"
+                    rospy.logerr("failed to stitch!")
         else:
             self.map_msg = msg
         actual_map = self.map_msg.data

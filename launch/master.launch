@@ -17,7 +17,7 @@
   </node>
 
   <!-- navigation map server -->
-  <node name="navigation_map_server" type="navigation_map_server.py" pkg="solace" />
+  <node name="navigation_map_server" type="navigation_map_server.py" pkg="solace" output="screen" />
 
   <!-- lost detector -->
   <node name="lost_detector" type="lost_detector.py" pkg="solace" output="screen" />
