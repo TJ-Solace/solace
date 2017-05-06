@@ -8,6 +8,8 @@ from std_msgs.msg import Bool
 
 STITCHING_PATH = "./image-stitching"
 MAP_DIR_PATH = "../maps/"
+GMAPPING_MAP_PATH = "{}gmapping_map.pgm".format(MAP_DIR_PATH)
+FULL_MAP_PATH = "{}full_map.pgm".format(MAP_DIR_PATH)
 
 
 class NavigationMapServer:
@@ -32,12 +34,13 @@ class NavigationMapServer:
                 self.gmapping_disk_map_pub.publish(self.map_msg)  # save gmapping map to disk
                 # stitch gmapping map to full map
                 try:
-                    subprocess.check_call([STITCHING_PATH, "{}full_map.pgm".format(MAP_DIR_PATH),
-                                           "{}gmapping_map.pgm".format(MAP_DIR_PATH)], stderr=subprocess.STDOUT)
-                    subprocess.call(["convert", "-compress", "none", "out.jpg", "{}full_map.pgm".format(MAP_DIR_PATH)])
+                    subprocess.check_call([STITCHING_PATH, FULL_MAP_PATH, GMAPPING_MAP_PATH], stderr=subprocess.STDOUT)
+                    subprocess.call(["convert", "-compress", "none", "out.jpg", FULL_MAP_PATH])
+                    self.map_msg.header.stamp = rospy.Time.now()
+                    self.map_msg.info.map_load_time = rospy.Time.now()
+                    self.file_to_occupancygrid(FULL_MAP_PATH, self.map_msg)
                 except subprocess.CalledProcessError:
                     print "failed to stitch!"
-                    # TODO: update map_msg map and metadata
         else:
             self.map_msg = msg
         actual_map = self.map_msg.data
@@ -53,13 +56,13 @@ class NavigationMapServer:
         self.is_lost = msg.data
 
     @staticmethod
-    def file_to_occupancygrid(file_name, grid_msg):
-        with open(file_name, "r") as infile:
+    def file_to_occupancygrid(file_path, grid_msg):
+        with open(file_path, "r") as infile:
             infile.next()
             grid_msg.info.width, grid_msg.info.height = map(int, infile.next().split())
             max_intensity = int(infile.next())
             mult = 100.0 / max_intensity
-            grid_msg.data = [int(p) * mult for p in infile.read().split()]
+            grid_msg.data = [(max_intensity - int(p)) * mult for p in infile.read().split()]
 
 
 if __name__ == "__main__":
