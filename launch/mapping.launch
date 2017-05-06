@@ -14,7 +14,7 @@
     <param name="linearUpdate" value=".1" />
     <param name="angularUpdate" value=".1" />    
     <param name="temporalUpdate" value="1.0" />
-    <param name="map_update_interval" value="2.0" />
+    <param name="map_update_interval" value="5.0" />
     <param name="xmin" value="-1.0" />
     <param name="xmax" value="1.0" />
     <param name="ymin" value="-1.0" />
