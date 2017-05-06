@@ -11,6 +11,9 @@ MAP_DIR_PATH = "../maps/"
 GMAPPING_MAP_PATH = "{}gmapping_map.pgm".format(MAP_DIR_PATH)
 FULL_MAP_PATH = "{}full_map.pgm".format(MAP_DIR_PATH)
 
+OCC_THRESH = 0.65
+FREE_THRESH = 0.196
+
 
 class NavigationMapServer:
     """
@@ -66,9 +69,10 @@ class NavigationMapServer:
         with open(file_path, "r") as infile:
             inpt = infile.read().split()
         grid_msg.info.width, grid_msg.info.height = int(inpt[1]), int(inpt[2])
-        max_intensity = int(inpt[3])
-        mult = 100.0 / max_intensity
-        grid_msg.data = [int((max_intensity - int(p)) * mult) for p in inpt[4:]]
+        max_intensity = float(inpt[3])
+        # convert to ternary occupancy values: 0 if free, 100 if occupied, -1 if unknown
+        grid_msg.data = [0 if (max_intensity - int(p)) / max_intensity <= FREE_THRESH else -1 if (max_intensity - int(
+            p)) / max_intensity < OCC_THRESH else 100 for p in inpt[4:]]
 
 
 if __name__ == "__main__":
