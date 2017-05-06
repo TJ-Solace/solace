@@ -52,6 +52,15 @@ class NavigationMapServer:
     def lost_cb(self, msg):
         self.is_lost = msg.data
 
+    @staticmethod
+    def file_to_occupancygrid(file_name, grid_msg):
+        with open(file_name, "r") as infile:
+            infile.next()
+            grid_msg.info.width, grid_msg.info.height = map(int, infile.next().split())
+            max_intensity = int(infile.next())
+            mult = 100.0 / max_intensity
+            grid_msg.data = [int(p) * mult for p in infile.read().split()]
+
 
 if __name__ == "__main__":
     rospy.init_node("navigation_map_server")
