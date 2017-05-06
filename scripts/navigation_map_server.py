@@ -1,9 +1,13 @@
 #!/usr/bin/env python
 
+import subprocess
+
 import rospy
 from nav_msgs.msg import OccupancyGrid
 from std_msgs.msg import Bool
 
+STITCHING_PATH = "./image-stitching"
+MAP_DIR_PATH = "../maps/"
 
 
 class NavigationMapServer:
@@ -25,8 +29,15 @@ class NavigationMapServer:
         if self.is_lost:
             self.lost_count += 1
             if self.lost_count % 3 == 0:  # update map on disk every 3 updates
-                self.gmapping_disk_map_pub.publish(self.map_msg)
-                # TODO: Stitch maps if lost and update map_msg metadata
+                self.gmapping_disk_map_pub.publish(self.map_msg)  # save gmapping map to disk
+                # stitch gmapping map to full map
+                try:
+                    subprocess.check_call([STITCHING_PATH, "{}full_map.pgm".format(MAP_DIR_PATH),
+                                           "{}gmapping_map.pgm".format(MAP_DIR_PATH)], stderr=subprocess.STDOUT)
+                    subprocess.call(["convert", "-compress", "none", "out.jpg", "{}full_map.pgm".format(MAP_DIR_PATH)])
+                except subprocess.CalledProcessError:
+                    print "failed to stitch!"
+                    # TODO: update map_msg map and metadata
         else:
             self.map_msg = msg
         actual_map = self.map_msg.data
