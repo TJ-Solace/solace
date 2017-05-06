@@ -58,11 +58,11 @@ class NavigationMapServer:
     @staticmethod
     def file_to_occupancygrid(file_path, grid_msg):
         with open(file_path, "r") as infile:
-            infile.next()
-            grid_msg.info.width, grid_msg.info.height = map(int, infile.next().split())
-            max_intensity = int(infile.next())
-            mult = 100.0 / max_intensity
-            grid_msg.data = [(max_intensity - int(p)) * mult for p in infile.read().split()]
+            inpt = infile.read().split()
+        grid_msg.info.width, grid_msg.info.height = int(inpt[1]), int(inpt[2])
+        max_intensity = int(inpt[3])
+        mult = 100.0 / max_intensity
+        grid_msg.data = [(max_intensity - int(p)) * mult for p in inpt[4:]]
 
 
 if __name__ == "__main__":
