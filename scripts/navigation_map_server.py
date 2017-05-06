@@ -68,7 +68,7 @@ class NavigationMapServer:
         grid_msg.info.width, grid_msg.info.height = int(inpt[1]), int(inpt[2])
         max_intensity = int(inpt[3])
         mult = 100.0 / max_intensity
-        grid_msg.data = [(max_intensity - int(p)) * mult for p in inpt[4:]]
+        grid_msg.data = [int((max_intensity - int(p)) * mult) for p in inpt[4:]]
 
 
 if __name__ == "__main__":
