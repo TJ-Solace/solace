@@ -3,7 +3,6 @@
 import math
 
 import rospy
-from std_msgs.msg import Header
 from geometry_msgs.msg import Twist
 from solace.msg import DriveCommand
 
@@ -15,7 +14,7 @@ class NavigationTwistToVESC:
 
     def __init__(self):
         self.drive_pub = rospy.Publisher("/drive", DriveCommand, queue_size=0)
-        self.cmd_sub = rospy.Subscriber("/vel_cb", Twist, self.vel_cb)
+        self.cmd_sub = rospy.Subscriber("/cmd_vel", Twist, self.vel_cb)
 
         self.drive_msg = DriveCommand()
 
@@ -26,7 +25,6 @@ class NavigationTwistToVESC:
         if self.drive_msg.power < 0:  # negate angle if driving backwards
             self.drive_msg.steering *= -1
 
-        self.drive_msg.header = Header()
         self.drive_msg.header.stamp = rospy.Time.now()
         self.drive_pub.publish(self.drive_msg)
 

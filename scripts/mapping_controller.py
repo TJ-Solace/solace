@@ -23,9 +23,11 @@ class MappingController:
             roslaunch.configure_logging(uuid)
             self.launch = roslaunch.parent.ROSLaunchParent(uuid, [LAUNCH_FILE])
             self.launch.start()
+            rospy.loginfo("started gmapping node")
         elif self.launch is not None:
             self.launch.shutdown()
             self.launch = None
+            rospy.loginfo("stopped gmapping node")
 
 
 if __name__ == "__main__":
