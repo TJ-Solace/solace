@@ -1,11 +1,11 @@
 <launch>
 
   <!-- known map server -->
-  <arg name="map"            default="$(find solace)/maps/short-course-33.yml" />
+  <arg name="map"            default="$(find solace)/maps/hallway.yaml" />
   <node name="map_server" pkg="map_server" type="map_server" args="$(arg map)" />
 
   <!-- amcl -->
-  <arg name="use_map_topic"  default="false"/>
+  <arg name="use_map_topic"  default="true"/>
   <arg name="scan_topic"     default="scan"/>
   <arg name="initial_pose_x" default="0.0"/>
   <arg name="initial_pose_y" default="0.0"/>
