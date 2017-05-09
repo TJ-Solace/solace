@@ -61,7 +61,7 @@ class PhysicalControl():
         self.voltage_smoother = ExpSmoother(self.voltage_input_smoothing_tc)  # ignore heavy voltage drop transients from the same
         self.voltage_smoother.lastSample = 3.8 * 4  # cheat so it doesn't take a long time to become drivable
         self.voltage_smoother.lastRet = 3.8 * 4
-        self.power_smoother = ExpSmoother(self.power_input_smoothing_tc)  # make the stick inputs chill a little bit
+        self.power_smoother = ExpSmoother(self.power_input_smoothing_tc, True)  # make the stick inputs chill a little bit
 
     def command(self, msg):
         thisT = self.get_time(msg.header.stamp)
@@ -71,7 +71,7 @@ class PhysicalControl():
 
     def drive(self, msg):
         thisT = self.get_time(msg.header.stamp)
-        rospy.logdebug_throttle(0.5, "actual speed: " + repr(msg.state.speed))  # just to see
+        rospy.loginfo_throttle(0.5, "actual speed: " + repr(msg.state.speed))  # just to see
         current = self.current_smoother.sample(msg.state.current_motor, thisT)
         voltage = self.voltage_smoother.sample(msg.state.voltage_input, thisT)
         if voltage < self.min_voltage:  # don't get to do anything if the battery is low
