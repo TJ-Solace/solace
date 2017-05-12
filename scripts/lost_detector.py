@@ -14,6 +14,7 @@ class LostDetector:
         self.lost_start = rospy.get_time()
 
     def poses_cb(self, msg):
+    	rospy.loginfo("number of particles: {}".format(len(msg.poses)))
         if len(msg.poses) > 1500:  # lost
             if not self.is_lost:
                 self.is_lost = True
