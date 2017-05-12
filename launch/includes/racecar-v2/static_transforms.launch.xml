@@ -2,15 +2,17 @@
 <launch>
 
   <node pkg="tf2_ros" type="static_transform_publisher" name="base_link_to_imu" 
-        args="0.13 -0.05 0.16    0.0 0.0 3.141592653 /base_link /base_imu_link" />
+        args="0.13 -0.05 0.171     0.0 0.0 3.14159265 /base_link /base_imu_link" />
 
   <node pkg="tf2_ros" type="static_transform_publisher" name="base_link_to_laser" 
-        args="0.14 0.0 0.16 0.0 0.0 0.0 1.0 /base_link /laser" />
+        args="0.14 0.0 0.203      0.0 0.0 0.0 1.0 /base_link /laser" />
 
   <node pkg="tf2_ros" type="static_transform_publisher" name="base_link_to_base_footprint" 
-        args="0.0 0.0 0.0     0.0 0.0 0.0 1.0 /base_link /base_footprint" />
+        args="0.0 0.0 0.0         0.0 0.0 0.0 1.0 /base_link /base_footprint" />
 
   <!-- todo: zed camera -->
+  <node pkg="tf2_ros" type="static_transform_publisher" name="base_link_to_zed_current_frame"
+        args="0.125 0.0 0.235     0.0 0.0 0.0 1.0 /base_link /zed_current_frame" />
   <!-- todo: structure sensor -->
 
 </launch>

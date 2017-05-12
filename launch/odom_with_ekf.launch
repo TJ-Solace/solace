@@ -1,0 +1,30 @@
+<!-- -*- mode: XML -*- -->
+<launch>
+  <arg name="racecar_version" value="racecar-v2" />
+
+  <include file="$(find solace)/launch/zed_camera.launch">
+    <arg name="svo_file" value="" />
+    <arg name="zed_id" value="0" />
+  </include>
+  <include file="$(find solace)/launch/includes/common/sensors.launch.xml" >
+    <arg name="racecar_version" value="$(arg racecar_version)" />
+  </include>
+  <node pkg="robot_pose_ekf" type="robot_pose_ekf" name="robot_pose_ekf" output="screen">
+    <param name="output_frame" value="ekf_odom" />
+    <param name="freq" value="30.0" />
+    <param name="sensor_timeout" value="1.0" />
+
+    <param name="odom_used" value="true" />
+    <remap from="/vesc/odom" to="/odom" />
+    
+    <param name="imu_used" value="true" />
+    <remap from="/imu" to="/imu_data" />
+
+    <param name="vo_used" value="true" />
+    <remap from="/zed/odom" to="/vo" />
+    
+    <param name="debug" value="false" />
+    <param name="self_diagnose" value="false" />
+  </node>
+  <include file="$(find solace)/launch/includes/$(arg racecar_version)/static_transforms.launch.xml" />
+</launch>
