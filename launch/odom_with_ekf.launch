@@ -5,7 +5,7 @@
   <include file="$(find solace)/launch/teleop.launch" />
 
   <node pkg="robot_pose_ekf" type="robot_pose_ekf" name="robot_pose_ekf" output="screen">
-    <param name="output_frame" value="ekf_odom" />
+    <!-- <param name="output_frame" value="ekf_odom" /> -->
     <param name="freq" value="30.0" />
     <param name="sensor_timeout" value="1.0" />
 
@@ -18,7 +18,7 @@
     <param name="vo_used" value="false" />
     <remap from="/zed/odom" to="/vo" />
     
-    <param name="debug" value="true" />
+    <param name="debug" value="false" />
     <param name="self_diagnose" value="false" />
   </node>
 </launch>
