@@ -2,6 +2,8 @@
 <launch>
   <arg name="racecar_version" value="racecar-v2" />
 
+  <include file="$(find solace)/launch/teleop.launch" />
+
   <node pkg="robot_pose_ekf" type="robot_pose_ekf" name="robot_pose_ekf" output="screen">
     <param name="output_frame" value="odom" />
     <param name="freq" value="30.0" />

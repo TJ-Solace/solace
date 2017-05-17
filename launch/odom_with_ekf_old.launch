@@ -2,8 +2,12 @@
 <launch>
   <arg name="racecar_version" value="racecar-v2" />
 
+<!--  <include file="$(find solace)/launch/zed_camera.launch">
+    <arg name="svo_file" value="" />
+    <arg name="zed_id" value="0" />
+  </include> -->
   <node pkg="robot_pose_ekf" type="robot_pose_ekf" name="robot_pose_ekf" output="screen">
-    <param name="output_frame" value="odom" />
+    <param name="output_frame" value="ekf_odom" />
     <param name="freq" value="30.0" />
     <param name="sensor_timeout" value="1.0" />
 
@@ -16,7 +20,14 @@
     <param name="vo_used" value="false" />
     <remap from="/zed/odom" to="/vo" />
     
-    <param name="debug" value="false" />
+    <param name="debug" value="true" />
     <param name="self_diagnose" value="false" />
   </node>
+<!--
+  <include file="$(find solace)/launch/includes/$(arg racecar_version)-teleop.launch.xml">
+    <arg name="racecar_version" value="$(arg racecar_version)" />
+    <arg name="run_camera" value="false" />
+  </include>
+  -->
+  <include file="$(find solace)/launch/teleop.launch" />
 </launch>
