@@ -59,7 +59,7 @@ class NavigationMapServer:
                 rospy.logerr("failed to stitch!")
             self.open_map_cb(self.map_msg)
         else:
-            rospy.logerr("why'd I get a gmapping map if I'm not even lost?")
+            rospy.loginfo("Got a gmapping map, but I'm not lost.")
 
     def lost_cb(self, msg):
         self.is_lost = msg.data
