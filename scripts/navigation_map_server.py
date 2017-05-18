@@ -6,7 +6,7 @@ import rospy
 from nav_msgs.msg import OccupancyGrid
 from std_msgs.msg import Bool
 
-STITCHING_PATH = "./image-stitching"
+STITCHING_PATH = "../OpenPano/src/image-stitching"
 MAP_DIR_PATH = "../maps/"
 GMAPPING_MAP_PATH = "{}gmapping_map.pgm".format(MAP_DIR_PATH)
 FULL_MAP_PATH = "{}full_map.pgm".format(MAP_DIR_PATH)
