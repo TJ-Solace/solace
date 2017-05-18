@@ -23,4 +23,7 @@
 
   <!-- mapping controller -->
   <node name="mapping_controller" type="mapping_controller.py" pkg="solace" output="screen" />
+
+  <!-- odom -->
+  <include file="$(find solace)/launch/odom_with_ekf.launch" />
 </launch>
