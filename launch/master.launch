@@ -6,12 +6,12 @@
   <include file="$(find solace)/launch/move_base.launch" />
 
   <!-- gmapping map saver -->
-  <node name="gmapping_map_saver" type="map_saver" pkg="map_server" args="-f gmapping_map">
+  <node name="gmapping_map_saver" type="map_saver" pkg="map_server" args="-f gmapping_map" output="screen">
     <remap from="map" to="gmapping_disk_map"/>
   </node>
 
   <!-- full map saver -->
-  <node name="full_map_saver" type="map_saver" pkg="map_server" args="-f full_map">
+  <node name="full_map_saver" type="map_saver" pkg="map_server" args="-f full_map" output="screen">
     <remap from="map" to="full_disk_map"/>
   </node>
 
