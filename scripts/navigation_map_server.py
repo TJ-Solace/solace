@@ -51,8 +51,9 @@ class NavigationMapServer:
             # stitch gmapping map to full map
             try:
 	    	rospy.logwarn("{} {} {}".format(STITCHING_PATH, FULL_MAP_PATH, GMAPPING_MAP_PATH))
-                subprocess.check_call([STITCHING_PATH, FULL_MAP_PATH, GMAPPING_MAP_PATH], stderr=subprocess.STDOUT)
-                subprocess.call(["convert", "-compress", "none", "out.jpg", FULL_MAP_PATH])
+                # TODO: remove shell=True if possible
+                subprocess.check_call([STITCHING_PATH, FULL_MAP_PATH, GMAPPING_MAP_PATH], stderr=subprocess.STDOUT, shell=True)
+                subprocess.call(["convert", "-compress", "none", "out.jpg", FULL_MAP_PATH], stderr=subprocess.STDOUT, shell=True)
                 self.map_msg.header.stamp = rospy.Time.now()
                 self.map_msg.info.map_load_time = rospy.Time.now()
                 self.file_to_occupancygrid(FULL_MAP_PATH, self.map_msg)
