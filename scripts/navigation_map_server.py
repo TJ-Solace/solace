@@ -6,8 +6,9 @@ import rospy
 from nav_msgs.msg import OccupancyGrid
 from std_msgs.msg import Bool
 
-STITCHING_PATH = "../OpenPano/src/image-stitching"
-MAP_DIR_PATH = "../maps/"
+SOLACE_PATH = "/home/ubuntu/racecar-ws/src/racecar/solace/"
+STITCHING_PATH = "{}OpenPano/src/image-stitching".format(SOLACE_PATH)
+MAP_DIR_PATH = "{}maps/".format(SOLACE_PATH)
 GMAPPING_MAP_PATH = "{}gmapping_map.pgm".format(MAP_DIR_PATH)
 FULL_MAP_PATH = "{}full_map.pgm".format(MAP_DIR_PATH)
 
@@ -49,6 +50,7 @@ class NavigationMapServer:
             self.gmapping_disk_map_pub.publish(msg)  # save gmapping map to disk
             # stitch gmapping map to full map
             try:
+	    	rospy.logwarn("{} {} {}".format(STITCHING_PATH, FULL_MAP_PATH, GMAPPING_MAP_PATH))
                 subprocess.check_call([STITCHING_PATH, FULL_MAP_PATH, GMAPPING_MAP_PATH], stderr=subprocess.STDOUT)
                 subprocess.call(["convert", "-compress", "none", "out.jpg", FULL_MAP_PATH])
                 self.map_msg.header.stamp = rospy.Time.now()
