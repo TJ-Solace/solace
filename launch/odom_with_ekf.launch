@@ -11,7 +11,7 @@
     <remap to="/vesc/odom" from="/odom" />
     
     <param name="imu_used" value="true" />
-    <remap to="/imu" from="/imu_data" />
+    <remap to="/imu_fixed" from="/imu_data" />
 
     <param name="vo_used" value="false" />
     <remap from="/zed/odom" to="/vo" />

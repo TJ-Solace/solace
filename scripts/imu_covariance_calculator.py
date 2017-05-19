@@ -7,23 +7,26 @@ import rospy
 
 class CommonCoincidentalCounterproductiveCovarianceCalibrationConvenienceCalculatorClass():
     dt = 0.05
-    num_samples = 10000
-    save_path = "/home/solace/covar.txt"
+    num_samples = 1000
+    save_path = "/home/ubuntu/covar.txt"
 
     def __init__(self):
         self.imu_sub = rospy.Subscriber("/imu", Imu, self.gather)
-        self.orientation_samples = np.zeros([3, self.num_samples])
-        self.anglular_velocity_samples = np.zeros([3, self.num_samples])
-        self.linear_accel_samples = np.zeros([3, self.num_samples])
+        self.orientation_samples = np.zeros((3, self.num_samples))
+        self.anglular_velocity_samples = np.zeros((3, self.num_samples))
+        self.linear_accel_samples = np.zeros((3, self.num_samples))
         self.step = 0
+	rospy.loginfo("initialized covariance calculator")
 
     def gather(self, msg):
-        roll, pitch, yaw = transformations.euler_from_quaternion(msg.Orientation)
-        roll_velocity, pitch_velocity, yaw_velocity = Imu.angular_velocity.x, Imu.angular_velocity.y, Imu.angular_velocity.z
-        x_accel, y_accel, z_accel = Imu.linear_acceleration.x, Imu.linear_acceleration.y, Imu.linear_acceleration.z
-        self.orientation_samples[self.step] = [roll, pitch, yaw]
-        self.anglular_velocity_samples[self.step] = [roll_velocity, pitch_velocity, yaw_velocity]
-        self.linear_accel_samples[self.step] = [x_accel, y_accel, z_accel]
+        rospy.loginfo(str(self.orientation_samples))
+    	rospy.loginfo_throttle(0.5, self.step)
+        roll, pitch, yaw = transformations.euler_from_quaternion((msg.orientation.x, msg.orientation.y, msg.orientation.z, msg.orientation.w))
+        roll_velocity, pitch_velocity, yaw_velocity = msg.angular_velocity.x, msg.angular_velocity.y, msg.angular_velocity.z
+        x_accel, y_accel, z_accel = msg.linear_acceleration.x, msg.linear_acceleration.y, msg.linear_acceleration.z
+        self.orientation_samples[:, self.step] = [roll, pitch, yaw]
+        self.anglular_velocity_samples[:, self.step] = [roll_velocity, pitch_velocity, yaw_velocity]
+        self.linear_accel_samples[:, self.step] = [x_accel, y_accel, z_accel]
         self.step += 1
         if self.step >= self.num_samples:
             # we're done
