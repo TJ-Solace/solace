@@ -28,6 +28,8 @@ class NavigationTwistToVESC:
         self.drive_msg.header.stamp = rospy.Time.now()
         self.drive_pub.publish(self.drive_msg)
 
+        rospy.loginfo("published a drive message from navigation stack")
+
 
 if __name__ == "__main__":
     rospy.init_node("navigation_twist_to_vesc")
