@@ -4,7 +4,7 @@ import roslaunch
 import rospy
 from std_msgs.msg import Bool
 
-LAUNCH_FILE = "~/racecar-ws/src/racecar/solace/launch/mapping.launch"
+LAUNCH_FILE = "/home/ubuntu/racecar-ws/src/racecar/solace/launch/mapping.launch"
 
 
 class MappingController:

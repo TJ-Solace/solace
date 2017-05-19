@@ -22,5 +22,11 @@
   <node name="lost_detector" type="lost_detector.py" pkg="solace" output="screen" />
 
   <!-- mapping controller -->
-  <node name="mapping_controller" type="mapping_controller.py" pkg="solace" output="screen" />
+  <!--<node name="mapping_controller" type="mapping_controller.py" pkg="solace" output="screen" />-->
+
+  <!-- odom -->
+  <include file="$(find solace)/launch/odom_with_ekf.launch" />
+
+  <!-- gmapping -->
+  <include file="$(find solace)/launch/mapping.launch" />
 </launch>

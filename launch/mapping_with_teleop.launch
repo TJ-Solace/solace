@@ -2,4 +2,5 @@
 <launch>
   <include file="$(find solace)/launch/teleop.launch" />
   <include file="$(find solace)/launch/mapping.launch" />
+  <include file="$(find solace)/launch/odom_with_ekf.launch" />
 </launch>

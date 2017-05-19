@@ -2,11 +2,9 @@
 <launch>
   <arg name="resolution" default="0.05" />
 
-  <include file="$(find solace)/launch/odom_with_ekf.launch" />
-
   <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping" output="screen">
     <param name="base_frame" value="base_link" />
-    <param name="map_frame" value="gmapping_map" />
+    <param name="map_frame" value="map" />
     <param name="odom_frame" value="odom" />
     <param name="particles" value="30" />
     <param name="maxUrange" value="8" />
@@ -21,5 +19,6 @@
     <param name="xmax" value="1.0" />
     <param name="ymin" value="-1.0" />
     <param name="ymax" value="1.0" />
+    <remap from="map" to="gmapping_map" />
   </node>
 </launch>
