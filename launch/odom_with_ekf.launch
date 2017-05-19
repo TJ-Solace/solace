@@ -19,4 +19,6 @@
     <param name="debug" value="false" />
     <param name="self_diagnose" value="false" />
   </node>
+
+  <node pkg="solace" type="imu_server.py" name="imu_server" />
 </launch>
