@@ -8,9 +8,11 @@ from std_msgs.msg import Bool
 
 SOLACE_PATH = "/home/ubuntu/racecar-ws/src/racecar/solace/"
 STITCHING_PATH = "{}OpenPano/src/image-stitching".format(SOLACE_PATH)
-MAP_DIR_PATH = "{}maps/".format(SOLACE_PATH)
+MAP_DIR_PATH = "/home/ubuntu/.ros/"
 GMAPPING_MAP_PATH = "{}gmapping_map.pgm".format(MAP_DIR_PATH)
+GMAPPING_MAP_PATH_JPG = "{}gmapping_map.jpg".format(MAP_DIR_PATH)
 FULL_MAP_PATH = "{}full_map.pgm".format(MAP_DIR_PATH)
+FULL_MAP_PATH_JPG = "{}full_map.jpg".format(MAP_DIR_PATH)
 
 OCC_THRESH = 0.65
 FREE_THRESH = 0.196
@@ -50,14 +52,19 @@ class NavigationMapServer:
             self.gmapping_disk_map_pub.publish(msg)  # save gmapping map to disk
             # stitch gmapping map to full map
             try:
-	    	rospy.loginfo("{} {} {}".format(STITCHING_PATH, FULL_MAP_PATH, GMAPPING_MAP_PATH))
+	    	rospy.loginfo("{} {} {}".format(STITCHING_PATH, FULL_MAP_PATH_JPG, GMAPPING_MAP_PATH_JPG))
+                # TODO: make efficient
+		subprocess.call(["convert", FULL_MAP_PATH, FULL_MAP_PATH_JPG], stderr=subprocess.STDOUT)
+		subprocess.call(["convert", GMAPPING_MAP_PATH, GMAPPING_MAP_PATH_JPG], stderr=subprocess.STDOUT)
                 # TODO: remove shell=True if possible
-                subprocess.check_call([STITCHING_PATH, FULL_MAP_PATH, GMAPPING_MAP_PATH], stderr=subprocess.STDOUT, shell=True)
+                subprocess.check_call(["bash", "-c", "{} {} {}".format(STITCHING_PATH, FULL_MAP_PATH_JPG, GMAPPING_MAP_PATH_JPG)], stderr=subprocess.STDOUT)
+                #subprocess.check_call("{} {} {}".format(STITCHING_PATH, FULL_MAP_PATH_JPG, GMAPPING_MAP_PATH_JPG), stderr=subprocess.STDOUT)
+                rospy.loginfo("successfully stitched new map!")
                 subprocess.call(["convert", "-compress", "none", "out.jpg", FULL_MAP_PATH], stderr=subprocess.STDOUT)
                 self.map_msg.header.stamp = rospy.Time.now()
                 self.map_msg.info.map_load_time = rospy.Time.now()
                 self.file_to_occupancygrid(FULL_MAP_PATH, self.map_msg)
-                rospy.loginfo("successfully stitched new map!")
+                rospy.loginfo("successfully loaded new map!")
             except subprocess.CalledProcessError:
                 rospy.logerr("failed to stitch!")
             self.open_map_cb(self.map_msg)
