@@ -1,0 +1,14 @@
+<launch>
+  <arg name="racecar_version" value="racecar-v2" />
+
+  <node pkg="robot_localization" type="ukf_localization_node" name="ukf_se" clear_params="true">
+    <rosparam command="load" file="$(find solace)/config/robot_localization.yaml" />
+
+    <remap from="odometry/filtered" to="/odom" />
+
+  </node>
+
+  <include file="$(find solace)/launch/teleop.launch" />
+  <node pkg="solace" type="imu_server.py" name="imu_server" />
+
+</launch>
