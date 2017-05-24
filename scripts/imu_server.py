@@ -4,15 +4,15 @@ import rospy
 from sensor_msgs.msg import Imu
 
 
-ORIENTATION_COV = [1.0, 0.0, 0.0,
-                   0.0, 1.0, 0.0,
-                   0.0, 0.0, 1.0]
-ANGULAR_VEL_COV = [1.0, 0.0, 0.0,
-                   0.0, 1.0, 0.0,
-                   0.0, 0.0, 1.0]
-LINEAR_ACC_COV = [1.0, 0.0, 0.0,
-                  0.0, 1.0, 0.0,
-                  0.0, 0.0, 1.0]
+ORIENTATION_COV = [0.8, 0.0, 0.0,
+                   0.0, 0.8, 0.0,
+                   0.0, 0.0, 0.8]
+ANGULAR_VEL_COV = [0.8, 0.0, 0.0,
+                   0.0, 0.8, 0.0,
+                   0.0, 0.0, 0.8]
+LINEAR_ACC_COV = [0.8, 0.0, 0.0,
+                  0.0, 0.8, 0.0,
+                  0.0, 0.0, 0.8]
 
 
 class ImuServer:
