@@ -56,9 +56,7 @@ class NavigationMapServer:
                 # TODO: make efficient
 		subprocess.call(["convert", FULL_MAP_PATH, FULL_MAP_PATH_JPG], stderr=subprocess.STDOUT)
 		subprocess.call(["convert", GMAPPING_MAP_PATH, GMAPPING_MAP_PATH_JPG], stderr=subprocess.STDOUT)
-                # TODO: remove shell=True if possible
                 subprocess.check_call(["bash", "-c", "{} {} {}".format(STITCHING_PATH, FULL_MAP_PATH_JPG, GMAPPING_MAP_PATH_JPG)], stderr=subprocess.STDOUT)
-                #subprocess.check_call("{} {} {}".format(STITCHING_PATH, FULL_MAP_PATH_JPG, GMAPPING_MAP_PATH_JPG), stderr=subprocess.STDOUT)
                 rospy.loginfo("successfully stitched new map!")
                 subprocess.call(["convert", "-compress", "none", "out.jpg", FULL_MAP_PATH], stderr=subprocess.STDOUT)
                 self.map_msg.header.stamp = rospy.Time.now()
