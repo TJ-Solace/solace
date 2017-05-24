@@ -25,7 +25,7 @@
   <!--<node name="mapping_controller" type="mapping_controller.py" pkg="solace" output="screen" />-->
 
   <!-- odom -->
-  <include file="$(find solace)/launch/odom_with_ekf.launch" />
+  <include file="$(find solace)/launch/robot_localization.launch" />
 
   <!-- gmapping -->
   <include file="$(find solace)/launch/mapping.launch" />
