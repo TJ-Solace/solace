@@ -70,6 +70,7 @@ class NavigationMapServer:
                 # smooth the gmapping map
                 img = cv2.imread(GMAPPING_MAP_PATH_JPG)
                 blurred = cv2.GaussianBlur(img, (21, 21), 0)
+                # TODO: use Sobel because hysteresis pointless with same threshold
                 smoothed = cv2.Canny(blurred, 100, 100, apertureSize=3)
                 smoothed = cv2.bitwise_not(smoothed)
                 cv2.imwrite(GMAPPING_MAP_PATH_JPG, smoothed)
