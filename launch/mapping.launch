@@ -4,7 +4,7 @@
 
   <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping">
     <param name="base_frame" value="base_link" />
-    <param name="map_frame" value="map" />
+    <param name="map_frame" value="gmapping_map" />
     <param name="odom_frame" value="odom" />
     <param name="particles" value="30" />
     <param name="maxUrange" value="8" />

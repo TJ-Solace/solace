@@ -29,7 +29,7 @@
     <param name="laser_likelihood_max_dist" value="2.0" />
     <param name="update_min_d"              value="0.25" />
     <param name="update_min_a"              value="0.2" />
-    <param name="odom_frame_id"             value="gmapping_map" />
+    <param name="odom_frame_id"             value="odom" />
     <param name="base_frame_id"             value="base_link" />
     <param name="resample_interval"         value="1" />
     <param name="transform_tolerance"       value="1.0" />
@@ -49,5 +49,14 @@
   </node>
 
   <!-- twist-to-vesc node -->
-  <node name="navigation_twist_to_vesc" type="navigation_twist_to_vesc.py" pkg="solace" output="screen" />
+  <node name="navigation_twist_to_vesc" type="navigation_twist_to_vesc.py" pkg="solace" />
+
+  <!-- static transforms -->
+  <include file="$(find solace)/launch/includes/racecar-v2/static_transforms.launch.xml" />
+
+  <!-- odom -->
+  <include file="$(find solace)/launch/robot_localization.launch" />
+
+  <!-- navigation map server -->
+  <node name="navigation_map_server" type="navigation_map_server.py" pkg="solace" output="screen" />
 </launch>

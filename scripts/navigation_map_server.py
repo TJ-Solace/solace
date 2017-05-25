@@ -50,6 +50,7 @@ class NavigationMapServer:
         # Set all unknown space as open
         self.map_msg.data = [cell if cell != -1 else 0 for cell in self.map_msg.data]
         self.map_pub.publish(self.map_msg)
+	rospy.loginfo("There are unknown areas (should be False!):  {}".format(-1 in self.map_msg.data))
 	rospy.loginfo("published navigation map")
 
         # Revert to actual map
