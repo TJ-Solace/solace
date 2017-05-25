@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
 import subprocess
+import cv2
+import numpy as np
 
 import rospy
 from nav_msgs.msg import OccupancyGrid
@@ -61,12 +63,25 @@ class NavigationMapServer:
             self.gmapping_disk_map_pub.publish(msg)  # save gmapping map to disk
             # stitch gmapping map to full map
             try:
+                # convert pgms to jpgs
 	    	rospy.loginfo("{} {} {}".format(STITCHING_PATH, FULL_MAP_PATH_JPG, GMAPPING_MAP_PATH_JPG))
                 # TODO: make efficient
 		subprocess.call(["convert", FULL_MAP_PATH, FULL_MAP_PATH_JPG], stderr=subprocess.STDOUT)
 		subprocess.call(["convert", GMAPPING_MAP_PATH, GMAPPING_MAP_PATH_JPG], stderr=subprocess.STDOUT)
+
+                # smooth the gmapping map
+                img = cv2.imread(GMAPPING_MAP_PATH_JPG)
+                blurred = cv2.GaussianBlur(img, (21, 21), 0)
+                smoothed = cv2.Canny(blurred, 100, 100, apertureSize=3)
+                smoothed = cv2.bitwise_not(smoothed)
+                cv2.imwrite(GMAPPING_MAP_PATH_JPG, smoothed)
+                rospy.loginfo("smoothed the gmapping map")
+
+                # stitch
                 subprocess.check_call(["bash", "-c", "{} {} {}".format(STITCHING_PATH, FULL_MAP_PATH_JPG, GMAPPING_MAP_PATH_JPG)], stderr=subprocess.STDOUT)
                 rospy.loginfo("successfully stitched new map!")
+
+                # convert to pgm and publish
                 subprocess.call(["convert", "-compress", "none", "out.jpg", FULL_MAP_PATH], stderr=subprocess.STDOUT)
                 self.map_msg.header.stamp = rospy.Time.now()
                 self.map_msg.info.map_load_time = rospy.Time.now()
