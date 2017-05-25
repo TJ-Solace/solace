@@ -4,6 +4,7 @@ import subprocess
 
 import rospy
 from nav_msgs.msg import OccupancyGrid
+from nav_msgs.srv import GetMap
 from std_msgs.msg import Bool
 
 SOLACE_PATH = "/home/ubuntu/racecar-ws/src/racecar/solace/"
@@ -27,11 +28,17 @@ class NavigationMapServer:
         self.map_pub = rospy.Publisher("navigation_map", OccupancyGrid, queue_size=0, latch=True)
         self.gmapping_disk_map_pub = rospy.Publisher("gmapping_disk_map", OccupancyGrid, queue_size=0)
         self.gmapping_map_sub = rospy.Subscriber("gmapping_map", OccupancyGrid, self.gmapping_map_cb)
-        self.init_map_sub = rospy.Subscriber("map", OccupancyGrid, self.open_map_cb)
+        #self.init_map_sub = rospy.Subscriber("map", OccupancyGrid, self.open_map_cb)
         self.lost_sub = rospy.Subscriber("is_lost", Bool, self.lost_cb)
 
         self.is_lost = False
         self.map_msg = OccupancyGrid()
+
+	rospy.loginfo("waiting for initial map")
+	rospy.wait_for_service("static_map")
+	init_map_service = rospy.ServiceProxy("static_map", GetMap)
+	self.open_map_cb(init_map_service().map)
+	rospy.loginfo("published initial map")
 
     def open_map_cb(self, msg):
         """
@@ -43,6 +50,7 @@ class NavigationMapServer:
         # Set all unknown space as open
         self.map_msg.data = [cell if cell != -1 else 0 for cell in self.map_msg.data]
         self.map_pub.publish(self.map_msg)
+	rospy.loginfo("published navigation map")
 
         # Revert to actual map
         self.map_msg.data = actual_map
