@@ -2,5 +2,5 @@
 <launch>
   <include file="$(find solace)/launch/teleop.launch" />
   <include file="$(find solace)/launch/mapping.launch" />
-  <include file="$(find solace)/launch/odom_with_ekf.launch" />
+  <include file="$(find solace)/launch/robot_localization.launch" />
 </launch>
