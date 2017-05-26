@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 
+import numpy as np
 import subprocess
 
+import cv2
 import rospy
 from nav_msgs.msg import OccupancyGrid
 from nav_msgs.srv import GetMap
@@ -38,31 +40,18 @@ class NavigationMapServer:
         self.pub_cleared_map(init_map_service().map)
         rospy.loginfo("published initial map")
 
-    def pub_cleared_map(self, msg):
-        """
-        This function publishes the map with all unknown areas marked as open. 
-        """
-        self.map_msg = msg
-        actual_map = msg.data
-
-        # Set all unknown space as open
-        self.map_msg.data = [cell if cell != -1 else 0 for cell in self.map_msg.data]
-        self.map_msg.data = self.clear_map(self.map_msg.data)
-        self.map_pub.publish(self.map_msg)
-        rospy.loginfo("published navigation map")
-
-        # Revert to actual map
-        self.map_msg.data = actual_map
-
     def gmapping_map_cb(self, msg):
         if self.is_lost:
             self.gmapping_disk_map_pub.publish(msg)  # save gmapping map to disk
             # stitch gmapping map to full map
             try:
+                # clear gmapping map
+                gmapping_map = cv2.imread(GMAPPING_MAP_PATH)
+                obstacles = cv2.inRange(gmapping_map, np.array([1, 1, 1]), np.array([255, 255, 255]))
+                cv2.imwrite(GMAPPING_MAP_PATH, obstacles)
 
                 # convert pgms to jpgs
                 rospy.loginfo("{} {} {}".format(STITCHING_PATH, FULL_MAP_PATH_JPG, GMAPPING_MAP_PATH_JPG))
-                # TODO: make efficient
                 subprocess.call(["convert", FULL_MAP_PATH, FULL_MAP_PATH_JPG], stderr=subprocess.STDOUT)
                 subprocess.call(["convert", GMAPPING_MAP_PATH, GMAPPING_MAP_PATH_JPG], stderr=subprocess.STDOUT)
 
@@ -86,20 +75,24 @@ class NavigationMapServer:
                 self.map_msg.header.stamp = rospy.Time.now()
                 self.map_msg.info.map_load_time = rospy.Time.now()
                 self.file_to_occupancygrid(FULL_MAP_PATH, self.map_msg)
+                self.map_pub.publish(self.map_msg)
                 rospy.loginfo("successfully loaded new map!")
             except subprocess.CalledProcessError:
                 rospy.logerr("failed to stitch!")
-            self.pub_cleared_map(self.map_msg)
         else:
             rospy.loginfo("Got a gmapping map, but I'm not lost.")
 
     def lost_cb(self, msg):
         self.is_lost = msg.data
 
-    @staticmethod
-    def clear_map(map_data):
-        # mark all unknown areas as clear
-        return [cell if cell != -1 else 0 for cell in map_data]
+    def pub_cleared_map(self, msg):
+        """
+        This function publishes the map with all unknown areas marked as open. 
+        """
+        # Set all unknown space as open
+        msg.data = [cell if cell != -1 else 0 for cell in msg.data]
+        self.map_pub.publish(msg)
+        rospy.loginfo("published navigation map")
 
     @staticmethod
     def file_to_occupancygrid(file_path, grid_msg):
