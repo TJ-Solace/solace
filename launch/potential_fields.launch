@@ -1,0 +1,6 @@
+<!-- -*- mode: XML -*- -->
+<launch>
+  <arg name="racecar_version" default="racecar-v2" />
+  <node name="physical_control" pkg="solace" type="physical_control.py" output="screen" />
+  <node name="potential_fields" pkg="solace" type="potential_fields.py" output="screen" />
+</launch>
