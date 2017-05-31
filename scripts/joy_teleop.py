@@ -2,7 +2,6 @@
 
 import rospy
 from sensor_msgs.msg import Joy
-from std_msgs.msg import Float64
 from solace.msg import DriveCommand
 
 
@@ -12,9 +11,8 @@ class JoyController:
         self.joy_sub = rospy.Subscriber("/vesc/joy", Joy, self.cmd_cb)
 
         self.drive_msg = DriveCommand()
-        
-        self.killed = False
-        self.braking = False
+
+        self.enabled = True
         print "Initialized teleop"
 
     def cmd_cb(self, msg):
@@ -39,27 +37,14 @@ class JoyController:
         # buttons[10] right stick
 
         if msg.buttons[4]:
-            self.killed = False
+            self.enabled = False
+        elif msg.buttons[5]:
+            self.enabled = True
 
-        if msg.buttons[5]:
-            self.drive_msg.power = 0
-            self.drive_msg.steering = 0
-            self.drive_msg.header.stamp = rospy.Time.now()
-            self.drive_pub.publish(self.drive_msg)
-
-        if self.killed:
+        if not self.enabled:
             return
 
-        if -(msg.axes[5] - 1.0) > 0.01:
-            self.braking = True
-            self.drive_msg.power = 0
-            self.drive_msg.steering = 0
-            self.drive_msg.header.stamp = rospy.Time.now()
-            self.drive_pub.publish(self.drive_msg)
-            return
-
-        if self.braking:
-            self.braking = False
+        if -(msg.axes[5] - 1.0) > 0.01:  # braking
             self.drive_msg.power = 0
             self.drive_msg.steering = 0
             self.drive_msg.header.stamp = rospy.Time.now()
