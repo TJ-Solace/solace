@@ -44,17 +44,18 @@ class NavigationMapServer:
 
     def gmapping_map_cb(self, msg):
         if self.is_lost:
-            self.gmapping_disk_map_pub.publish(msg)  # save gmapping map to disk
+            #self.gmapping_disk_map_pub.publish(msg)  # save gmapping map to disk
             # stitch gmapping map to full map
             try:
                 # clear gmapping map
-                gmapping_map = cv2.imread(GMAPPING_MAP_PATH)
-		rospy.logwarn(os.path.exists(GMAPPING_MAP_PATH))
-		rospy.loginfo(gmapping_map)
-		rospy.loginfo("printed the gmapping map")
-                obstacles = cv2.inRange(gmapping_map, np.array([1, 1, 1]), np.array([255, 255, 255]))
-                cv2.imwrite(CLEARED_GMAPPING_MAP_PATH, obstacles)
-		rospy.loginfo("cleared gmapping map")
+                #gmapping_map = cv2.imread(GMAPPING_MAP_PATH)
+		#rospy.logwarn(os.path.exists(GMAPPING_MAP_PATH))
+		#rospy.loginfo(gmapping_map)
+                #obstacles = cv2.inRange(gmapping_map, np.array([1, 1, 1]), np.array([255, 255, 255]))
+                #cv2.imwrite(CLEARED_GMAPPING_MAP_PATH, obstacles)
+		msg.data = self.clear_map(msg.data)
+                self.gmapping_disk_map_pub.publish(msg)  # save gmapping map to disk
+                rospy.loginfo("cleared gmapping map")
 
                 # convert pgms to jpgs
                 subprocess.call(["convert", FULL_MAP_PATH, FULL_MAP_PATH_JPG], stderr=subprocess.STDOUT)
@@ -90,6 +91,9 @@ class NavigationMapServer:
 
     def lost_cb(self, msg):
         self.is_lost = msg.data
+
+    def clear_map(self, map_arr):
+        return [occ if occ >= OCC_THRESH else 0 for occ in map_arr]
 
     def pub_cleared_map(self, msg):
         """
