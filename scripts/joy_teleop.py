@@ -36,10 +36,10 @@ class JoyController:
         # buttons[9] left stick
         # buttons[10] right stick
 
-        if msg.buttons[4]:
-            self.enabled = False
-        elif msg.buttons[5]:
+        if msg.buttons[5]:
             self.enabled = True
+        elif msg.buttons[4]:
+            self.enabled = False
 
         if not self.enabled:
             return
