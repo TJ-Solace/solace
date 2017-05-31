@@ -5,14 +5,14 @@ speed_to_erpm_gain: 2841
 speed_to_erpm_offset: 0.0
 
 # servo value (0 to 1) =  steering_angle_to_servo_gain * steering angle (radians) + steering_angle_to_servo_offset
-steering_angle_to_servo_gain: -1.0321
+steering_angle_to_servo_gain: -1.04
 steering_angle_to_servo_offset: 0.463
 
 # publish odom to base link tf
 vesc_to_odom/publish_tf: false
 
 # car wheelbase is about 38cm 
-wheelbase: .38
+wheelbase: .34
 
 vesc_driver:
   port: /dev/ttyACM0

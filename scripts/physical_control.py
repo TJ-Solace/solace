@@ -41,10 +41,10 @@ class PhysicalControl():
 
     magic_current_number = 0.66  # numbers close to 1 aggressively reduce power on overcurrent, numbers close to 0 make less impact
     max_current = 45.0  # soft max current- set vesc maxima to higher than actually desired and let the node try to help first
-#    min_voltage = 3.2 * 4  # min 3.2 volts per cell
-    min_voltage = 11  # while we don't have batteries
+    min_voltage = 3.2 * 4  # min 3.2 volts per cell
+#    min_voltage = 11  # while we don't have batteries
     # time constant for the exponential weighting in seconds- 68% of the output comes from 1tc in the past or less
-    power_input_smoothing_tc = 0.13  # just trying to stop really aggressive reversal in direction
+    power_input_smoothing_tc = 0.15  # just trying to stop really aggressive reversal in direction
 
     current_input_smoothing_tc = 0.02  # only trying to smooth out the very sharp current spikes
     voltage_input_smoothing_tc = 1.0  # not looking for sudden drops, looking for longish-term trend of the battery being low
@@ -75,7 +75,7 @@ class PhysicalControl():
         current = self.current_smoother.sample(msg.state.current_motor, thisT)
         voltage = self.voltage_smoother.sample(msg.state.voltage_input, thisT)
         if voltage < self.min_voltage:  # don't get to do anything if the battery is low
-            rospy.logfatal_throttle(3.0, "Battery is too low! (" + repr(voltage) + "v)")
+            rospy.logfatal_throttle(1.0, "Battery is too low! (" + repr(voltage) + "v)")
             self.power_pub.publish(0)
             self.steering_pub.publish(self.steering_mid)
             return
@@ -85,7 +85,7 @@ class PhysicalControl():
         if current > self.max_current:
             rospy.logwarn_throttle(0.5, "current limiting: " + repr(current))
             self.desired_speed.data = self.power_smoother.sample((msg.state.speed * self.magic_current_number + self.desired_speed.data * (1 - self.magic_current_number)), thisT)
-        if abs(msg.state.speed - self.desired_speed.data) / self.power_mult > 0.15 and ((msg.state.speed > 0 and self.desired_speed.data < msg.state.speed) or (msg.state.speed < 0 and self.desired_speed.data > msg.state.speed)):  # if we're reducing speed rapidly, brake
+        if abs(msg.state.speed - self.desired_speed.data) / self.power_mult > 0.12 and ((msg.state.speed > 0 and self.desired_speed.data < msg.state.speed) or (msg.state.speed < 0 and self.desired_speed.data > msg.state.speed)):  # if we're reducing speed rapidly, brake
             rospy.loginfo_throttle(0.5, "braking")
             self.brake_pub.publish(self.max_current * 0.75)
             return

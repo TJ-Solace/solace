@@ -19,11 +19,11 @@ import math
 
 class PotentialFields:
     def __init__(self):
-        self.charge_laser_particle = 0.07
-        self.charge_forward_boost = 25.0
+        self.charge_laser_particle = 0.09
+        self.charge_forward_boost = 30.0
         self.boost_distance = 0.5
-        self.p_speed = 0.007
-        self.p_steering = 1.0
+        self.p_speed = 0.003
+        self.p_steering = 0.3
 
         rospy.Subscriber("/scan", numpy_msg(LaserScan), self.scan_callback)
 
@@ -71,6 +71,7 @@ class PotentialFields:
         command_msg.power = (self.p_speed * np.sign(total_x_component) * math.sqrt(total_x_component**2 + total_y_component**2))
 
         # Publish the command
+	command_msg.header.stamp = rospy.Time.now()
         self.pub_nav.publish(command_msg)
 
 
