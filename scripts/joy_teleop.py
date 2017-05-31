@@ -40,6 +40,10 @@ class JoyController:
             self.enabled = True
         elif msg.buttons[4]:
             self.enabled = False
+	    self.drive_msg.power = 0
+	    self.drive_msg.steering = 0
+	    self.drive_msg.header.stamp = rospy.Time.now()
+	    self.drive_pub.publish(self.drive_msg)
 
         if not self.enabled:
             return
