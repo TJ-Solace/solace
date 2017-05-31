@@ -2,6 +2,7 @@
 
 import numpy as np
 import subprocess
+import os
 
 import cv2
 import rospy
@@ -13,6 +14,7 @@ SOLACE_PATH = "/home/ubuntu/racecar-ws/src/racecar/solace/"
 STITCHING_PATH = "{}OpenPano/src/image-stitching".format(SOLACE_PATH)
 MAP_DIR_PATH = "/home/ubuntu/.ros/"
 GMAPPING_MAP_PATH = "{}gmapping_map.pgm".format(MAP_DIR_PATH)
+CLEARED_GMAPPING_MAP_PATH = "{}cleared_gmapping_map.pgm".format(MAP_DIR_PATH)
 GMAPPING_MAP_PATH_JPG = "{}gmapping_map.jpg".format(MAP_DIR_PATH)
 FULL_MAP_PATH = "{}full_map.pgm".format(MAP_DIR_PATH)
 FULL_MAP_PATH_JPG = "{}full_map.jpg".format(MAP_DIR_PATH)
@@ -47,13 +49,16 @@ class NavigationMapServer:
             try:
                 # clear gmapping map
                 gmapping_map = cv2.imread(GMAPPING_MAP_PATH)
+		rospy.logwarn(os.path.exists(GMAPPING_MAP_PATH))
+		rospy.loginfo(gmapping_map)
+		rospy.loginfo("printed the gmapping map")
                 obstacles = cv2.inRange(gmapping_map, np.array([1, 1, 1]), np.array([255, 255, 255]))
-                cv2.imwrite(GMAPPING_MAP_PATH, obstacles)
+                cv2.imwrite(CLEARED_GMAPPING_MAP_PATH, obstacles)
+		rospy.loginfo("cleared gmapping map")
 
                 # convert pgms to jpgs
-                rospy.loginfo("{} {} {}".format(STITCHING_PATH, FULL_MAP_PATH_JPG, GMAPPING_MAP_PATH_JPG))
                 subprocess.call(["convert", FULL_MAP_PATH, FULL_MAP_PATH_JPG], stderr=subprocess.STDOUT)
-                subprocess.call(["convert", GMAPPING_MAP_PATH, GMAPPING_MAP_PATH_JPG], stderr=subprocess.STDOUT)
+                subprocess.call(["convert", CLEARED_GMAPPING_MAP_PATH, GMAPPING_MAP_PATH_JPG], stderr=subprocess.STDOUT)
 
                 # smooth the gmapping map
                 #                img = cv2.imread(GMAPPING_MAP_PATH_JPG)
@@ -65,6 +70,7 @@ class NavigationMapServer:
                 #                rospy.loginfo("smoothed the gmapping map")
 
                 # stitch
+                #rospy.loginfo("{} {} {}".format(STITCHING_PATH, FULL_MAP_PATH_JPG, GMAPPING_MAP_PATH_JPG))
                 subprocess.check_call(
                     ["bash", "-c", "{} {} {}".format(STITCHING_PATH, FULL_MAP_PATH_JPG, GMAPPING_MAP_PATH_JPG)],
                     stderr=subprocess.STDOUT)
