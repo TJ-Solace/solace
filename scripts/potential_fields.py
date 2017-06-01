@@ -70,6 +70,14 @@ class PotentialFields:
         #command_msg.drive.speed = (self.p_speed * np.sign(total_x_component) * math.sqrt(total_x_component**2 + total_y_component**2))
         command_msg.power = (self.p_speed * np.sign(total_x_component) * math.sqrt(total_x_component**2 + total_y_component**2))
 
+	if abs(command_msg.power) < 0.12:
+	    if command_msg.power >= 0:
+                command_msg.power = 0.12
+	    else:
+	    	command_msg.power = -0.12
+
+	rospy.loginfo("power: {}".format(command_msg.power))
+
         # Publish the command
 	command_msg.header.stamp = rospy.Time.now()
         self.pub_nav.publish(command_msg)
