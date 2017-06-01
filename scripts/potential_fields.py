@@ -22,7 +22,8 @@ class PotentialFields:
         self.charge_laser_particle = 0.15
         self.charge_forward_boost = 20.0
         self.boost_distance = 0.5
-        self.p_speed = 0.002
+        self.p_speed = 0.003
+	self.min_power = 0.15
         self.p_steering = 2.0
 
         rospy.Subscriber("/scan", numpy_msg(LaserScan), self.scan_callback)
@@ -70,11 +71,11 @@ class PotentialFields:
         #command_msg.drive.speed = (self.p_speed * np.sign(total_x_component) * math.sqrt(total_x_component**2 + total_y_component**2))
         command_msg.power = (self.p_speed * np.sign(total_x_component) * math.sqrt(total_x_component**2 + total_y_component**2))
 
-	if abs(command_msg.power) < 0.12:
+	if abs(command_msg.power) < self.min_power:
 	    if command_msg.power >= 0:
-                command_msg.power = 0.12
+                command_msg.power = self.min_power
 	    else:
-	    	command_msg.power = -0.12
+	    	command_msg.power = -self.min_power
 
 	rospy.loginfo("power: {}".format(command_msg.power))
 
