@@ -19,11 +19,11 @@ import math
 
 class PotentialFields:
     def __init__(self):
-        self.charge_laser_particle = 0.09
-        self.charge_forward_boost = 30.0
+        self.charge_laser_particle = 0.15
+        self.charge_forward_boost = 20.0
         self.boost_distance = 0.5
-        self.p_speed = 0.003
-        self.p_steering = 0.3
+        self.p_speed = 0.002
+        self.p_steering = 2.0
 
         rospy.Subscriber("/scan", numpy_msg(LaserScan), self.scan_callback)
 
@@ -65,10 +65,18 @@ class PotentialFields:
         #command_msg = AckermannDriveStamped()
         #command_msg.drive.steering_angle = (self.p_steering * np.sign(total_x_component) * math.atan2(total_y_component, total_x_component))
         command_msg = DriveCommand()
-        command_msg.steering = (self.p_steering * np.sign(total_x_component) * math.atan2(total_y_component, total_x_component))
+        command_msg.steering = -(self.p_steering * np.sign(total_x_component) * math.atan2(total_y_component, total_x_component))
         
         #command_msg.drive.speed = (self.p_speed * np.sign(total_x_component) * math.sqrt(total_x_component**2 + total_y_component**2))
         command_msg.power = (self.p_speed * np.sign(total_x_component) * math.sqrt(total_x_component**2 + total_y_component**2))
+
+	if abs(command_msg.power) < 0.12:
+	    if command_msg.power >= 0:
+                command_msg.power = 0.12
+	    else:
+	    	command_msg.power = -0.12
+
+	rospy.loginfo("power: {}".format(command_msg.power))
 
         # Publish the command
 	command_msg.header.stamp = rospy.Time.now()
