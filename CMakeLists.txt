@@ -11,6 +11,10 @@ find_package(catkin REQUIRED COMPONENTS
         ackermann_msgs
         std_msgs
         geometry_msgs
+        nav_msgs
+        tf2
+        tf2_geometry_msgs
+        tf2_ros
         roscpp
         rospy
         )
