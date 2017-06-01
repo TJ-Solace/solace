@@ -36,7 +36,7 @@ class ExpSmoother():
 
 class PhysicalControl():
     steering_mid = 0.363
-    steering_mult = 0.45
+    steering_mult = 0.4
     power_mult = 20000.0
 
     magic_current_number = 0.66  # numbers close to 1 aggressively reduce power on overcurrent, numbers close to 0 make less impact
