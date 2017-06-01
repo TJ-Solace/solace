@@ -45,6 +45,7 @@ class PhysicalControl():
 #    min_voltage = 11  # while we don't have batteries
     # time constant for the exponential weighting in seconds- 68% of the output comes from 1tc in the past or less
     power_input_smoothing_tc = 0.15  # just trying to stop really aggressive reversal in direction
+    steering_input_smoothing_tc = 0.15  # just trying to stop really aggressive reversal in direction
 
     current_input_smoothing_tc = 0.02  # only trying to smooth out the very sharp current spikes
     voltage_input_smoothing_tc = 1.0  # not looking for sudden drops, looking for longish-term trend of the battery being low
@@ -62,10 +63,12 @@ class PhysicalControl():
         self.voltage_smoother.lastSample = 3.8 * 4  # cheat so it doesn't take a long time to become drivable
         self.voltage_smoother.lastRet = 3.8 * 4
         self.power_smoother = ExpSmoother(self.power_input_smoothing_tc)  # make the stick inputs chill a little bit
+        self.steering_smoother = ExpSmoother(self.steering_input_smoothing_tc)  # make the stick inputs chill a little bit
 
     def command(self, msg):
         thisT = self.get_time(msg.header.stamp)
-        self.desired_angle.data = msg.steering * self.steering_mult + self.steering_mid
+        #self.desired_angle.data = msg.steering * self.steering_mult + self.steering_mid
+        self.desired_angle.data = self.steering_smoother.sample(msg.steering * self.steering_mult + self.steering_mid, thisT)
         self.desired_speed.data = self.power_smoother.sample(msg.power * self.power_mult, thisT)
         # self.desired_speed = msg.power * self.power_mult
 
