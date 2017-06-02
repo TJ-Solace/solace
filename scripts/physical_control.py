@@ -35,7 +35,7 @@ class ExpSmoother():
 
 
 class PhysicalControl():
-    steering_mid = 0.363
+    steering_mid = 0.41
     steering_mult = 0.4
     power_mult = 20000.0
 
@@ -45,7 +45,7 @@ class PhysicalControl():
 #    min_voltage = 11  # while we don't have batteries
     # time constant for the exponential weighting in seconds- 68% of the output comes from 1tc in the past or less
     power_input_smoothing_tc = 0.15  # just trying to stop really aggressive reversal in direction
-    steering_input_smoothing_tc = 0.1  # just trying to stop really aggressive reversal in direction
+    steering_input_smoothing_tc = 0.05  # just trying to stop really aggressive reversal in direction
 
     current_input_smoothing_tc = 0.02  # only trying to smooth out the very sharp current spikes
     voltage_input_smoothing_tc = 1.0  # not looking for sudden drops, looking for longish-term trend of the battery being low

@@ -19,12 +19,14 @@ import math
 
 class PotentialFields:
     def __init__(self):
-        self.charge_laser_particle = 0.2
+        self.charge_laser_particle = 0.3
         self.charge_forward_boost = 20.0
         self.boost_distance = 0.5
-        self.p_speed = 0.003
-	self.min_power = 0.3
-        self.p_steering = 1.0
+        self.p_speed = 0.004
+	self.min_power = 0.2
+        self.p_steering = 2.0
+
+	self.stuck_count = 0
 
         rospy.Subscriber("/scan", numpy_msg(LaserScan), self.scan_callback)
 
@@ -42,8 +44,8 @@ class PotentialFields:
         scan_x_unit_vectors = -np.cos(scan_rad_angles)
         scan_y_unit_vectors = -np.sin(scan_rad_angles)
 
-        scan_x_components = (self.charge_laser_particle * scan_x_unit_vectors) / np.square(msg.ranges)
-        scan_y_components = (self.charge_laser_particle * scan_y_unit_vectors) / np.square(msg.ranges)
+        scan_x_components = (self.charge_laser_particle * scan_x_unit_vectors) / np.power(msg.ranges, 1.5)
+        scan_y_components = (self.charge_laser_particle * scan_y_unit_vectors) / np.power(msg.ranges, 1.5)
 
         # Add the potential for the point behind the robot (to give it a kick)
         kick_x_component = np.ones(1) * self.charge_forward_boost / self.boost_distance**2.0
@@ -72,10 +74,20 @@ class PotentialFields:
         command_msg.power = (self.p_speed * np.sign(total_x_component) * math.sqrt(total_x_component**2 + total_y_component**2))
 
 	if abs(command_msg.power) < self.min_power:
+	    self.stuck_count += 1
+	    if self.stuck_count > 300:
+	    	rospy.loginfo("attempting to recover!")
+        	self.charge_forward_boost = 0
 	    if command_msg.power >= 0:
                 command_msg.power = self.min_power
 	    else:
 	    	command_msg.power = -self.min_power
+	if 300 <= self.stuck_count < 360:
+	    self.stuck_count += 1
+	else:
+	    self.stuck_count = 0
+	    self.charge_forward_boost = 20
+	    rospy.loginfo("unstuck!")
 
 	rospy.loginfo("power: {}".format(command_msg.power))
 
