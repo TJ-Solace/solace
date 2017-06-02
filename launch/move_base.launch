@@ -46,6 +46,7 @@
     <rosparam file="$(find solace)/config/racecar-v2/local_costmap_params.yaml" command="load" />
     <rosparam file="$(find solace)/config/racecar-v2/global_costmap_params.yaml" command="load" />
     <rosparam file="$(find solace)/config/racecar-v2/base_local_planner_params.yaml" command="load" />
+    <rosparam file="$(find solace)/config/racecar-v2/base_global_planner_params.yaml" command="load" />
   </node>
 
   <!-- twist-to-vesc node -->
