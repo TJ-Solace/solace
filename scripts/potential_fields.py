@@ -26,7 +26,7 @@ class PotentialFields:
 	self.min_power = 0.2
         self.p_steering = 2.0
 
-	self.stuck_count = 0
+	self.stuck_start_time = None
 
         rospy.Subscriber("/scan", numpy_msg(LaserScan), self.scan_callback)
 
@@ -74,20 +74,19 @@ class PotentialFields:
         command_msg.power = (self.p_speed * np.sign(total_x_component) * math.sqrt(total_x_component**2 + total_y_component**2))
 
 	if abs(command_msg.power) < self.min_power:
-	    self.stuck_count += 1
-	    if self.stuck_count > 300:
-	    	rospy.loginfo("attempting to recover!")
-        	self.charge_forward_boost = 0
+            if self.stuck_start_time is None:
+                self.stuck_start_time = rospy.get_time()
+            elif rospy.get_time() - self.stuck_start_time > 3.0:  # start recovery after 3 seconds
+	    	rospy.logwarn("starting recovery!")
+        	self.charge_forward_boost = -2.0
 	    if command_msg.power >= 0:
                 command_msg.power = self.min_power
 	    else:
 	    	command_msg.power = -self.min_power
-	if 300 <= self.stuck_count < 360:
-	    self.stuck_count += 1
-	else:
-	    self.stuck_count = 0
-	    self.charge_forward_boost = 20
-	    rospy.loginfo("unstuck!")
+        if self.stuck_start_time is not None and rospy.get_time() - self.stuck_start_time > 5.0:  # recover for 2 seconds
+            rospy.logwarn("finished recovery!")
+            self.stuck_start_time = None
+            self.charge_forward_boost = 20.0
 
 	rospy.loginfo("power: {}".format(command_msg.power))
 
