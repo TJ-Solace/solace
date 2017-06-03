@@ -9,7 +9,6 @@ import rospy
 
 from sensor_msgs.msg import LaserScan
 from geometry_msgs.msg import PointStamped
-#from ackermann_msgs.msg import AckermannDriveStamped
 from solace.msg import DriveCommand
 
 from rospy.numpy_msg import numpy_msg
@@ -31,13 +30,9 @@ class PotentialFields:
         rospy.Subscriber("/scan", numpy_msg(LaserScan), self.scan_callback)
 
         self.pub_goal = rospy.Publisher("~potentialFieldGoal", PointStamped, queue_size=1)
-        #self.pub_nav = rospy.Publisher("/vesc/ackermann_cmd_mux/input/navigation", AckermannDriveStamped, queue_size=1)
         self.pub_nav = rospy.Publisher("/drive", DriveCommand, queue_size=0)
 
     def scan_callback(self, msg):
-        # Debug
-        #print("Starting increment {} increment {}".format(msg.angle_min, msg.angle_increment))
-
         # Create potential gradients for all laser scan particles
         scan_rad_angles = ( (msg.angle_increment * np.arange(1081, dtype=float)) + msg.angle_min )
 
@@ -65,30 +60,31 @@ class PotentialFields:
         self.pub_goal.publish(visualizer_msg)
 
         # Now, create a steering command to send to the vesc.
-        #command_msg = AckermannDriveStamped()
-        #command_msg.drive.steering_angle = (self.p_steering * np.sign(total_x_component) * math.atan2(total_y_component, total_x_component))
         command_msg = DriveCommand()
         command_msg.steering = (self.p_steering * np.sign(total_x_component) * math.atan2(total_y_component, total_x_component))
         
-        #command_msg.drive.speed = (self.p_speed * np.sign(total_x_component) * math.sqrt(total_x_component**2 + total_y_component**2))
         command_msg.power = (self.p_speed * np.sign(total_x_component) * math.sqrt(total_x_component**2 + total_y_component**2))
 
 	if abs(command_msg.power) < self.min_power:
+            # start recovery after 3 seconds
             if self.stuck_start_time is None:
                 self.stuck_start_time = rospy.get_time()
-            elif rospy.get_time() - self.stuck_start_time > 3.0:  # start recovery after 3 seconds
+            elif rospy.get_time() - self.stuck_start_time > 3.0:
 	    	rospy.logwarn("starting recovery!")
         	self.charge_forward_boost = -2.0
+            # set minimum power
 	    if command_msg.power >= 0:
                 command_msg.power = self.min_power
 	    else:
 	    	command_msg.power = -self.min_power
-        if self.stuck_start_time is not None and rospy.get_time() - self.stuck_start_time > 5.0:  # recover for 2 seconds
-            rospy.logwarn("finished recovery!")
+        
+        # recover for 2 seconds
+        if self.stuck_start_time is not None and rospy.get_time() - self.stuck_start_time > 5.0:
+            rospy.loginfo("finished recovery!")
             self.stuck_start_time = None
             self.charge_forward_boost = 20.0
 
-	rospy.loginfo("power: {}".format(command_msg.power))
+	#rospy.loginfo("power: {}".format(command_msg.power))
 
         # Publish the command
 	command_msg.header.stamp = rospy.Time.now()
