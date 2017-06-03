@@ -1,0 +1,16 @@
+<!-- -*- mode: XML -*- -->
+<launch>
+  <arg name="racecar_version" default="racecar-v2" />
+
+  <!-- teleop -->
+  <include file="$(find solace)/launch/teleop.launch" />
+
+  <!-- potential fields -->
+  <node name="potential_fields" pkg="solace" type="mapping_potential_fields.py" output="screen" />
+
+  <!-- odom -->
+  <include file="$(find solace)/launch/robot_localization.launch" />
+
+  <!-- mapping -->
+  <include file="$(find solace)/launch/mapping.launch" />
+</launch>
