@@ -80,14 +80,14 @@ class PotentialFields:
             self.stuck_start_time = None
             self.charge_forward_boost = 20.0
 
+	rospy.loginfo("power: {}".format(command_msg.power))
+
 	if abs(command_msg.power) < self.min_power:
             # set minimum power
 	    if command_msg.power >= 0:
                 command_msg.power = self.min_power
 	    else:
 	    	command_msg.power = -self.min_power
-         
-	rospy.loginfo("power: {}".format(command_msg.power))
 
         # Publish the command
 	command_msg.header.stamp = rospy.Time.now()
