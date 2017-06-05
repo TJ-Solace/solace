@@ -88,7 +88,7 @@ class PhysicalControl():
         if current > self.max_current:
             rospy.logwarn_throttle(0.5, "current limiting: " + repr(current))
             self.desired_speed.data = self.power_smoother.sample((msg.state.speed * self.magic_current_number + self.desired_speed.data * (1 - self.magic_current_number)), thisT)
-        if abs(msg.state.speed - self.desired_speed.data) / self.power_mult > 0.12 and ((msg.state.speed > 0 and self.desired_speed.data < msg.state.speed) or (msg.state.speed < 0 and self.desired_speed.data > msg.state.speed)):  # if we're reducing speed rapidly, brake
+        if abs(msg.state.speed) > 0.05 * self.power_mult and abs(msg.state.speed - self.desired_speed.data) / self.power_mult > 0.12 and ((msg.state.speed > 0 and self.desired_speed.data < msg.state.speed) or (msg.state.speed < 0 and self.desired_speed.data > msg.state.speed)):  # if we're reducing speed rapidly, brake
             rospy.loginfo_throttle(0.5, "braking")
             self.brake_pub.publish(self.max_current * 0.75)
             return

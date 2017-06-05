@@ -23,8 +23,9 @@ class MappingPotentialFields:
         self.charge_forward_boost = 20.0
         self.boost_distance = 0.5
         self.p_speed = 0.003
-	self.min_power = 0.4
-	self.stuck_power = 0.1
+	self.min_power = 0.15
+	self.max_power = 0.33
+	self.stuck_power = 0.05
         self.p_steering = 1.0
 
 	self.stuck_start_time = None
@@ -33,14 +34,14 @@ class MappingPotentialFields:
 
         rospy.Subscriber("/scan", numpy_msg(LaserScan), self.scan_callback)
         # TODO: check if this is the right topic
-        rospy.Subscriber("/entropy", Float64, self.entropy_callback)
+        rospy.Subscriber("/slam_gmapping/entropy", Float64, self.entropy_callback)
 
         self.pub_goal = rospy.Publisher("~potentialFieldGoal", PointStamped, queue_size=1)
         self.pub_nav = rospy.Publisher("/drive", DriveCommand, queue_size=0)
 
     def entropy_callback(self, msg):
         # Sets uncertainty returned by Gmapping
-        self.mapping_entropy = msg.data
+        self.mapping_entropy = (msg.data - 1.0) * 2.0
         rospy.loginfo("mapping entropy: {}".format(self.mapping_entropy));
 
     def scan_callback(self, msg):
@@ -80,7 +81,7 @@ class MappingPotentialFields:
         if self.mapping_entropy > 1.0:
             command_msg.power /= self.mapping_entropy
 
-        if abs(command_msg.power) < self.stuck_power:
+        if abs(command_msg.power * self.mapping_entropy) < self.stuck_power:
             # start recovery after 3 seconds
             if self.stuck_start_time is None:
                 self.stuck_start_time = rospy.get_time()
@@ -102,11 +103,16 @@ class MappingPotentialFields:
                 command_msg.power = self.min_power
 	    else:
 	    	command_msg.power = -self.min_power
+        if abs(command_msg.power > self.max_power:
+	if command_msg.power > 0:
+	    command_msg.power = self.max_power
+	else:
+	    command_msg.power = -self.max_power
+
 
         # Publish the command
 	command_msg.header.stamp = rospy.Time.now()
         self.pub_nav.publish(command_msg)
-
 
 
 if __name__ == "__main__":
