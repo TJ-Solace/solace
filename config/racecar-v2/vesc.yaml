@@ -5,8 +5,8 @@ speed_to_erpm_gain: 2841
 speed_to_erpm_offset: 0.0
 
 # servo value (0 to 1) =  steering_angle_to_servo_gain * steering angle (radians) + steering_angle_to_servo_offset
-steering_angle_to_servo_gain: 1.22
-steering_angle_to_servo_offset: 0.41
+steering_angle_to_servo_gain: 1.215 #1.21
+steering_angle_to_servo_offset: 0.415
 
 # publish odom to base link tf
 vesc_to_odom/publish_tf: false

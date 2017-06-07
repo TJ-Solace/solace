@@ -22,9 +22,9 @@ class PotentialFields:
         self.charge_forward_boost = 20.0
         self.boost_distance = 0.5
         self.p_speed = 0.004
-	self.min_power = 0.2
-        self.stuck_power = 0.2
-        self.p_steering = 2.0
+	self.min_power = 0.1
+        self.stuck_power = 0.125
+        self.p_steering = 1.33
 
 	self.stuck_start_time = None
 
@@ -40,8 +40,8 @@ class PotentialFields:
         scan_x_unit_vectors = -np.cos(scan_rad_angles)
         scan_y_unit_vectors = -np.sin(scan_rad_angles)
 
-        scan_x_components = (self.charge_laser_particle * scan_x_unit_vectors) / np.power(msg.ranges, 1.5)
-        scan_y_components = (self.charge_laser_particle * scan_y_unit_vectors) / np.power(msg.ranges, 1.5)
+        scan_x_components = (self.charge_laser_particle * scan_x_unit_vectors) / np.power(msg.ranges, 1.8)
+        scan_y_components = (self.charge_laser_particle * scan_y_unit_vectors) / np.power(msg.ranges, 1.8)
 
         # Add the potential for the point behind the robot (to give it a kick)
         kick_x_component = np.ones(1) * self.charge_forward_boost / self.boost_distance**2.0

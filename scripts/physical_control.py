@@ -41,7 +41,7 @@ class PhysicalControl():
 
     magic_current_number = 0.66  # numbers close to 1 aggressively reduce power on overcurrent, numbers close to 0 make less impact
     max_current = 45.0  # soft max current- set vesc maxima to higher than actually desired and let the node try to help first
-    min_voltage = 3.2 * 4  # min 3.2 volts per cell
+    min_voltage = 3.2 * 3  # min 3.2 volts per cell
 #    min_voltage = 11  # while we don't have batteries
     # time constant for the exponential weighting in seconds- 68% of the output comes from 1tc in the past or less
     power_input_smoothing_tc = 0.15  # just trying to stop really aggressive reversal in direction
