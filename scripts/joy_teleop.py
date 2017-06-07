@@ -2,17 +2,21 @@
 
 import rospy
 from sensor_msgs.msg import Joy
+from std_msgs.msg import Bool
 from solace.msg import DriveCommand
 
 
 class JoyController:
     def __init__(self):
         self.drive_pub = rospy.Publisher("/drive", DriveCommand, queue_size=0)
+	self.kill_pub = rospy.Publisher("/kill_switch", Bool, queue_size=0)
+
         self.joy_sub = rospy.Subscriber("/vesc/joy", Joy, self.cmd_cb)
 
         self.drive_msg = DriveCommand()
 
         self.enabled = True
+	self.kill_pub.publish(False)
         print "Initialized teleop"
 
     def cmd_cb(self, msg):
@@ -35,6 +39,11 @@ class JoyController:
         # buttons[8] Logitech button
         # buttons[9] left stick
         # buttons[10] right stick
+
+	if msg.buttons[1]:
+	    self.kill_pub.publish(True)
+	elif msg.buttons[0]:
+	    self.kill_pub.publish(False)
 
         if msg.buttons[5]:
             self.enabled = True

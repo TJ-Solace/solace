@@ -4,7 +4,7 @@ import rospy
 from math import exp
 from solace.msg import DriveCommand
 from vesc_msgs.msg import VescStateStamped
-from std_msgs.msg import Float64, Header
+from std_msgs.msg import Float64, Header, Bool
 
 
 class ExpSmoother():
@@ -56,7 +56,9 @@ class PhysicalControl():
         self.steering_pub = rospy.Publisher("/vesc/commands/servo/position", Float64, queue_size=0)
         self.scan_sub = rospy.Subscriber("/drive", DriveCommand, self.command)
         self.vesc_sub = rospy.Subscriber("/vesc/sensors/core", VescStateStamped, self.drive)
-        self.desired_speed = Float64()
+	self.kill_sub = rospy.Subscriber("/kill_switch", Bool, self.kill_cb)
+        self.killed = False
+	self.desired_speed = Float64()
         self.desired_angle = Float64()
         self.current_smoother = ExpSmoother(self.current_input_smoothing_tc)  # try to ignore the reasonably short current transients caused by accelerating sharply
         self.voltage_smoother = ExpSmoother(self.voltage_input_smoothing_tc)  # ignore heavy voltage drop transients from the same
@@ -65,12 +67,17 @@ class PhysicalControl():
         self.power_smoother = ExpSmoother(self.power_input_smoothing_tc)  # make the stick inputs chill a little bit
         self.steering_smoother = ExpSmoother(self.steering_input_smoothing_tc)  # make the stick inputs chill a little bit
 
+    def kill_cb(self, msg):
+        self.killed = msg.data
+
     def command(self, msg):
         thisT = self.get_time(msg.header.stamp)
-        #self.desired_angle.data = msg.steering * self.steering_mult + self.steering_mid
-        self.desired_angle.data = self.steering_smoother.sample(msg.steering * self.steering_mult + self.steering_mid, thisT)
-        self.desired_speed.data = self.power_smoother.sample(msg.power * self.power_mult, thisT)
-        # self.desired_speed = msg.power * self.power_mult
+	if self.killed:
+	    self.desired_angle.data = self.steering_mid
+	    self.desired_speed.data = self.power_smoother.sample(0, thisT)
+	else:
+            self.desired_angle.data = self.steering_smoother.sample(msg.steering * self.steering_mult + self.steering_mid, thisT)
+            self.desired_speed.data = self.power_smoother.sample(msg.power * self.power_mult, thisT)
 
     def drive(self, msg):
         thisT = self.get_time(msg.header.stamp)
