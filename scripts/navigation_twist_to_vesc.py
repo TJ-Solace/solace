@@ -20,7 +20,7 @@ class NavigationTwistToVESC:
 
     def vel_cb(self, msg):
         rospy.loginfo("{} {}".format(msg.linear.x, msg.linear.y))
-        self.drive_msg.power = math.sqrt(msg.linear.x ** 2 + msg.linear.y ** 2) * 10
+        self.drive_msg.power = math.sqrt(msg.linear.x ** 2 + msg.linear.y ** 2)
         # TODO: check if steering angle is calculated correctly (negate? switch y and x?)
         self.drive_msg.steering = math.atan2(msg.linear.y, msg.linear.x) / math.pi
         if self.drive_msg.power < 0:  # negate angle if driving backwards
