@@ -37,3 +37,4 @@ if __name__ == "__main__":
 	    goal = make_goal_pose(pose)
 	    client.send_goal(goal)
 	    client.wait_for_result()
+            rospy.loginfo("Reached waypoint!")
