@@ -19,17 +19,18 @@ class NavigationTwistToVESC:
         self.drive_msg = DriveCommand()
 
     def vel_cb(self, msg):
-        rospy.loginfo_throttle(0.5, "{} {}".format(msg.linear.x, msg.linear.y))
+        rospy.loginfo_throttle(0.5, "{} {} {}".format(msg.linear.x, msg.linear.y, msg.angular.z))
         self.drive_msg.power = math.sqrt(msg.linear.x ** 2 + msg.linear.y ** 2)
         # TODO: check if steering angle is calculated correctly (negate? switch y and x?)
-        self.drive_msg.steering = math.atan2(msg.linear.y, msg.linear.x) / math.pi
+        #self.drive_msg.steering = math.atan2(msg.linear.y, msg.linear.x) / math.pi
+        self.drive_msg.steering = msg.angular.z
         if self.drive_msg.power < 0:  # negate angle if driving backwards
             self.drive_msg.steering *= -1
 
         self.drive_msg.header.stamp = rospy.Time.now()
         self.drive_pub.publish(self.drive_msg)
 
-        rospy.loginfo_throttle(0.5, "published a drive message from navigation stack. power {}, angle {}".format(self.drive_msg.power, self.drive_msg.steering))
+        rospy.loginfo_throttle(0.5, "power {}, angle {}".format(self.drive_msg.power, self.drive_msg.steering))
 
 
 if __name__ == "__main__":
