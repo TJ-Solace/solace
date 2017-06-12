@@ -77,7 +77,7 @@ class NavigationMapServer:
                 rospy.loginfo("successfully stitched new map!")
 
                 # convert to pgm and publish
-                subprocess.call(["convert", "-compress", "none", "out.jpg", FULL_MAP_PATH], stderr=subprocess.STDOUT)
+                subprocess.call(["convert", "out.jpg", FULL_MAP_PATH], stderr=subprocess.STDOUT)
                 self.map_msg.header.stamp = rospy.Time.now()
                 self.map_msg.info.map_load_time = rospy.Time.now()
                 self.file_to_occupancygrid(FULL_MAP_PATH, self.map_msg)
