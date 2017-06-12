@@ -62,13 +62,12 @@ class NavigationMapServer:
                 subprocess.call(["convert", CLEARED_GMAPPING_MAP_PATH, GMAPPING_MAP_PATH_JPG], stderr=subprocess.STDOUT)
 
                 # smooth the gmapping map
-                #                img = cv2.imread(GMAPPING_MAP_PATH_JPG)
-                #                blurred = cv2.GaussianBlur(img, (21, 21), 0)
-                # TODO: use Sobel because hysteresis pointless with same threshold
-                #                smoothed = cv2.Canny(blurred, 100, 100, apertureSize=3)
-                #                smoothed = cv2.bitwise_not(smoothed)
-                #                cv2.imwrite(GMAPPING_MAP_PATH_JPG, smoothed)
-                #                rospy.loginfo("smoothed the gmapping map")
+                img = cv2.imread(GMAPPING_MAP_PATH_JPG)
+                blurred = cv2.GaussianBlur(img, (21, 21), 0)
+                smoothed = cv2.Canny(blurred, 10, 115, apertureSize=3)
+                smoothed = cv2.bitwise_not(smoothed)
+                cv2.imwrite(GMAPPING_MAP_PATH_JPG, smoothed)
+                rospy.loginfo("smoothed the gmapping map")
 
                 # stitch
                 #rospy.loginfo("{} {} {}".format(STITCHING_PATH, FULL_MAP_PATH_JPG, GMAPPING_MAP_PATH_JPG))
@@ -78,7 +77,7 @@ class NavigationMapServer:
                 rospy.loginfo("successfully stitched new map!")
 
                 # convert to pgm and publish
-                subprocess.call(["convert", "-compress", "none", "out.jpg", FULL_MAP_PATH], stderr=subprocess.STDOUT)
+                subprocess.call(["convert", "out.jpg", FULL_MAP_PATH], stderr=subprocess.STDOUT)
                 self.map_msg.header.stamp = rospy.Time.now()
                 self.map_msg.info.map_load_time = rospy.Time.now()
                 self.file_to_occupancygrid(FULL_MAP_PATH, self.map_msg)
