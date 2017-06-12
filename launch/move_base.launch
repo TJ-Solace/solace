@@ -1,6 +1,6 @@
 <launch>
   <!-- map server -->
-  <arg name="map" default="$(find solace)/maps/hallway2_cleared.yaml" />
+  <arg name="map" default="$(find solace)/maps/hallway2_smoothed.yaml" />
   <node name="map_server" pkg="map_server" type="map_server" args="$(arg map)" />
 
   <!-- amcl -->
