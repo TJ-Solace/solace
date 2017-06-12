@@ -1,7 +1,7 @@
 local_costmap:
   global_frame: odom
   robot_base_frame: base_link
-  update_frequency: 4.0
+  update_frequency: 2.0
   publish_frequency: 2.0
   static_map: false
   rolling_window: true
@@ -9,4 +9,4 @@ local_costmap:
   height: 6.0
   resolution: 0.01
 
-controller_frequency: 5.0
+controller_frequency: 2.0
